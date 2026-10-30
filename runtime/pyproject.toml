@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-voice-runtime = "voice_runtime.daemon:main"
+voice-runtime = "voice_runtime.daemon:cli"
 
 [dependency-groups]
 dev = [
