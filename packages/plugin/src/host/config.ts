@@ -14,6 +14,16 @@ export const Config = z.object({
   fixedSessionId: z.string().default(''),
   cancelTimeoutMs: z.natural().min(500).max(120_000).default(8_000),
   speakAssistant: z.boolean().default(true),
+  petEnabled: z.boolean().default(true),
+  petBaseUrl: z.string().default(''),
+  petId: z.string().default('main'),
+  petLockTtlMs: z.natural().min(1_000).max(1_800_000).default(120_000),
+  petBridgeTimeoutMs: z.natural().min(500).max(15_000).default(3_000),
+  petBubbleEnabled: z.boolean().default(true),
+  petAnimationEnabled: z.boolean().default(true),
+  petUseWorkStatus: z.boolean().default(true),
+  petTtsProvider: z.boolean().default(false),
+  petTtsProviderCommand: z.string().default(''),
 });
 
 export type Config = Schemastery.TypeT<typeof Config>;

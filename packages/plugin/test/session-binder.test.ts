@@ -17,6 +17,16 @@ const config: Config = {
   fixedSessionId: '',
   cancelTimeoutMs: 1_000,
   speakAssistant: true,
+  petEnabled: false,
+  petBaseUrl: '',
+  petId: 'main',
+  petLockTtlMs: 1_000,
+  petBridgeTimeoutMs: 1_000,
+  petBubbleEnabled: true,
+  petAnimationEnabled: true,
+  petUseWorkStatus: true,
+  petTtsProvider: false,
+  petTtsProviderCommand: '',
 };
 
 function agent(id: string): DshAgent {

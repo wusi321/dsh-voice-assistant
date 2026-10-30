@@ -17,6 +17,16 @@ const config: Config = {
   fixedSessionId: '',
   cancelTimeoutMs: 1_000,
   speakAssistant: true,
+  petEnabled: false,
+  petBaseUrl: '',
+  petId: 'main',
+  petLockTtlMs: 1_000,
+  petBridgeTimeoutMs: 1_000,
+  petBubbleEnabled: true,
+  petAnimationEnabled: true,
+  petUseWorkStatus: true,
+  petTtsProvider: false,
+  petTtsProviderCommand: '',
 };
 
 function context() {
@@ -45,21 +55,21 @@ function event(type: string, payload: Record<string, unknown>): AnyVoiceEvent {
 describe('TtsOutput', () => {
   it('sends tts.speak only when the Runtime is connected', () => {
     const down = new TtsOutput(context(), manager(false), config);
-    expect(down.speak('你好。')).toBe(false);
+    expect(down.speak('hello.')).toBe(false);
 
     const send = vi.fn(() => true);
     const up = new TtsOutput(context(), { connected: true, send } as any, config);
-    expect(up.speak('你好。')).toBe(true);
+    expect(up.speak('hello.')).toBe(true);
     expect(send).toHaveBeenCalledWith(
       'tts.speak',
-      expect.objectContaining({ text: '你好。', interruptible: true }),
+      expect.objectContaining({ text: 'hello.', interruptible: true }),
     );
     expect(up.status.speaking).toBe(true);
   });
 
   it('tracks started/finished/interrupted', () => {
     const tts = new TtsOutput(context(), manager(), config);
-    tts.speak('第一句。');
+    tts.speak('first.');
     const id = tts.status.utteranceId;
     expect(id).toBeTruthy();
     tts.handleRuntimeEvent(event('tts.started', { utteranceId: id }));
@@ -71,7 +81,7 @@ describe('TtsOutput', () => {
   it('cancels the active utterance', () => {
     const send = vi.fn(() => true);
     const tts = new TtsOutput(context(), { connected: true, send } as any, config);
-    tts.speak('要停的话。');
+    tts.speak('stop.');
     tts.cancel('barge_in');
     expect(send).toHaveBeenCalledWith(
       'tts.cancel',

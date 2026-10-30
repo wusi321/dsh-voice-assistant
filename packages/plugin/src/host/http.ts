@@ -1,6 +1,8 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
 import type { AgentBridgeStatus, DshAgentBridge } from './agent-bridge.js';
+import type { PetBridge, PetStatus } from './pet-bridge.js';
+import type { PetTtsProvider } from './pet-tts-provider.js';
 import type { BoundSessionStatus, SessionBinder } from './session-binder.js';
 import type { RuntimeManager, RuntimeStatus } from './runtime-manager.js';
 import type { TtsOutput, TtsStatus } from './tts-output.js';
@@ -24,6 +26,8 @@ function statusPayload(
   session: BoundSessionStatus,
   agent: AgentBridgeStatus,
   tts: TtsStatus,
+  pet: PetStatus,
+  petTts: { state: string; reason: string },
 ): Record<string, unknown> {
   return {
     state: runtime.state,
@@ -35,6 +39,8 @@ function statusPayload(
     session,
     agent,
     tts,
+    pet,
+    petTts,
   };
 }
 
@@ -72,6 +78,8 @@ export function registerStatusRoute(
   binder: SessionBinder,
   bridge: DshAgentBridge,
   tts: TtsOutput,
+  pet: PetBridge,
+  petTts: PetTtsProvider,
   enabled: boolean,
 ): () => void {
   const webServer: WebServer | undefined = ctx.webServer ?? ctx.get<WebServer>('webServer', false);
@@ -86,7 +94,14 @@ export function registerStatusRoute(
         sendJson(
           res,
           200,
-          statusPayload(manager.status, binder.status(), bridge.status, tts.status),
+          statusPayload(
+            manager.status,
+            binder.status(),
+            bridge.status,
+            tts.status,
+            pet.status,
+            petTts.status,
+          ),
         );
         return;
       }

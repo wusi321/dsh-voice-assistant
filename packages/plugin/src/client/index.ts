@@ -50,8 +50,14 @@ const EN = {
     speaking: 'Speaking',
     idle: 'Idle',
   },
+  pet: {
+    label: 'dsh-pet',
+    avatar: 'Avatar state',
+    locked: 'Pet lock',
+    tts: 'Pet TTS provider',
+  },
   notice:
-    'P5: voice messages target the active DSH Session; assistant text is spoken by the local Runtime. P7 adds full-duplex barge-in.',
+    'P6: Voice Runtime owns playback; dsh-pet only receives bubbles, animation, work status, and a lock. TTS Provider is opt-in.',
 };
 
 const ZH = {
@@ -94,7 +100,14 @@ const ZH = {
     speaking: '播报中',
     idle: '空闲',
   },
-  notice: 'P5：语音消息发送到当前 DSH Session，助手文本由本地 Runtime 播报。P7 再加入全双工打断。',
+  pet: {
+    label: 'dsh-pet',
+    avatar: 'Avatar 状态',
+    locked: '桌宠锁定',
+    tts: '桌宠 TTS Provider',
+  },
+  notice:
+    'P6：Voice Runtime 独占播放；dsh-pet 只接收气泡、动画、工作状态和 Lock。TTS Provider 为显式可选。',
 };
 
 interface SessionStatus {
@@ -116,6 +129,14 @@ interface TtsStatus {
   lastText?: string;
 }
 
+interface PetStatus {
+  connection?: string;
+  petId?: string;
+  locked?: boolean;
+  avatarState?: string;
+  workStatus?: string;
+}
+
 interface StatusPayload {
   state?: string;
   detail?: string;
@@ -126,6 +147,8 @@ interface StatusPayload {
   session?: SessionStatus;
   agent?: AgentStatus;
   tts?: TtsStatus;
+  pet?: PetStatus;
+  petTts?: { state?: string; reason?: string };
 }
 
 const COLORS: Record<string, string> = {
@@ -195,6 +218,7 @@ function createSettings(React: any, t: (key: string) => string): any {
     const session = status.session;
     const agent = status.agent;
     const tts = status.tts;
+    const pet = status.pet;
     const row = (label: string, value: string | number | undefined): any =>
       React.createElement(
         'tr',
@@ -258,6 +282,14 @@ function createSettings(React: any, t: (key: string) => string): any {
           row(t('agent.label'), agent?.agentState),
           row(t('agent.tool'), agent?.toolName),
           row(t('tts.label'), tts?.speaking ? t('tts.speaking') : t('tts.idle')),
+          row(
+            t('pet.label'),
+            pet?.connection
+              ? `${pet.connection}${pet.avatarState ? ` / ${pet.avatarState}` : ''}`
+              : undefined,
+          ),
+          row(t('pet.locked'), pet?.locked ? 'yes' : 'no'),
+          row(t('pet.tts'), status.petTts?.state),
           row(t('agent.text'), agent?.lastText ?? tts?.lastText),
           row(t('runtime.discovery'), status.discoveryPath),
         ),

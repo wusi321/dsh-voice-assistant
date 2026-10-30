@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0] - 2026-10-31
+
+### Added
+
+- P6 dsh-pet integration: `PetBridge` over the verified `/dsh-pet-7340` HTTP API (state, work status, broadcast, bubble clear, animation, wake/sleep).
+- Avatar state derivation from Voice State + Agent State + TTS, with Agent tool work taking priority over Voice IDLE.
+- Renewable dsh-pet lock with TTL, `lock-required`/`lock-lost` retry, and release on unload.
+- Assistant sentence bubbles and explicit animation/URL bridge.
+- Optional dsh-pet TTS Provider adapter with MP3 contract validation, timeout, and lifecycle; disabled by default to preserve single playback authority.
+
+### Notes
+
+- Live dsh-pet/DSH installation verification remains.
+- The TTS provider requires a configured MP3 synthesizer; it never fabricates bytes.
+- Full-duplex barge-in and permission confirmation remain P7/P8.
+
 ## [0.3.0] - 2026-10-30
 
 ### Added

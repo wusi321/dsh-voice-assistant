@@ -149,7 +149,7 @@ Jarvis 的 `OfflineRecognizer` 只能对完整 VAD 段转写（`jarvis/models.py
 | V-04 | Windows 默认麦克风/扬声器不同设备时 PortAudio 行为 | 双设备矩阵实测 | P2 |
 | V-05 | Ubuntu 22.04 PipeWire/PulseAudio 设备枚举与热插拔 | 实机 + `pactl`/`wpctl` | P2 |
 | V-06 | DSH 0.2.1-rc.3 的 client slot 在桌面与 web 两种模式下的 sessionId props | 装一个最小 client 插件打印 props | P5 |
-| V-07 | dsh-pet 0.3.8 在 DSH 0.2.1-rc.3 上可安装/共存（peer 版本） | 测试 profile 安装 + `/state` | P6 |
+| V-07 | dsh-pet 0.3.8 在 DSH 0.2.1-rc.3 上可安装/共存（peer 版本） | 🟡 契约已按源码实现；未安装真实 dsh-pet | P6 |
+| V-10 | dsh-pet `/work-status` 外部槽与内部会话状态的优先级冲突 | 🟡 已实现外部映射并有开关；未真机同时写入观察 | P6 |
 | V-08 | `agent/assistant-stream` 的 `text-delta` 与 `end` 在真实 DSH turn 中的顺序 | 订阅并记录 frame | P5 |
 | V-09 | `agent.cancel` 后 `whenIdle` 与 `turn/end.reason` 的可观测性 | 构造长工具调用，取消并读 session | P7 |
-| V-10 | dsh-pet `/work-status` 外部槽与内部会话状态的优先级冲突 | 同时写入两组状态，观察 `/state` | P6 |

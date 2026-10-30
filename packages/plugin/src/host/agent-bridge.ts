@@ -20,6 +20,7 @@ export type AgentState =
   | 'THINKING'
   | 'TOOL_CALLING'
   | 'TOOL_RUNNING'
+  | 'TOOL_RESULT'
   | 'WAITING_CONFIRMATION'
   | 'SUCCESS'
   | 'ERROR'
@@ -220,7 +221,7 @@ export class DshAgentBridge {
       this.toolName = typeof event.data?.name === 'string' ? event.data.name : undefined;
       this.setState('TOOL_RUNNING');
     } else if (type === 'tool/result') {
-      this.setState('THINKING');
+      this.setState('TOOL_RESULT');
     } else if (type === 'approval/asked') {
       this.setState('WAITING_CONFIRMATION');
     } else if (type === 'turn/end') {

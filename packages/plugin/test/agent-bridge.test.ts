@@ -19,6 +19,16 @@ const config: Config = {
   fixedSessionId: '',
   cancelTimeoutMs: 1_000,
   speakAssistant: true,
+  petEnabled: false,
+  petBaseUrl: '',
+  petId: 'main',
+  petLockTtlMs: 1_000,
+  petBridgeTimeoutMs: 1_000,
+  petBubbleEnabled: true,
+  petAnimationEnabled: true,
+  petUseWorkStatus: true,
+  petTtsProvider: false,
+  petTtsProviderCommand: '',
 };
 
 function makeAgent(id = 's1'): DshAgent {
@@ -66,11 +76,11 @@ describe('DshAgentBridge', () => {
     const a = makeAgent();
     const tts = { speak: vi.fn(), cancel: vi.fn() };
     const { bridge } = makeBridge(a, tts);
-    expect(bridge.sendMessage('打开台灯')).toBe('s1');
+    expect(bridge.sendMessage('鎵撳紑鍙扮伅')).toBe('s1');
     expect(a.followup).toHaveBeenCalledOnce();
     const message = vi.mocked(a.followup).mock.calls[0]?.[0] as any;
     expect(message.role).toBe('user');
-    expect(message.content[0].text).toBe('打开台灯');
+    expect(message.content[0].text).toBe('鎵撳紑鍙扮伅');
     expect(message.source.kind).toBe('user');
   });
 
@@ -82,16 +92,19 @@ describe('DshAgentBridge', () => {
     expect(stream).toBeDefined();
     stream?.({
       agent: a,
-      frame: { type: 'chunk', chunk: { type: 'reasoning-delta', text: '秘密推理' } },
+      frame: { type: 'chunk', chunk: { type: 'reasoning-delta', text: 'secret reasoning' } },
     });
     stream?.({
       agent: a,
       frame: { type: 'chunk', chunk: { type: 'tool-call-delta', argumentsDelta: '{}' } },
     });
-    stream?.({ agent: a, frame: { type: 'chunk', chunk: { type: 'text-delta', text: '你好。' } } });
+    stream?.({
+      agent: a,
+      frame: { type: 'chunk', chunk: { type: 'text-delta', text: 'hello.' } },
+    });
     stream?.({ agent: a, frame: { type: 'end' } });
     expect(tts.speak).toHaveBeenCalledTimes(1);
-    expect(tts.speak).toHaveBeenCalledWith('你好。');
+    expect(tts.speak).toHaveBeenCalledWith('hello.');
     expect(bridge.status.agentState).toBe('IDLE');
   });
 
@@ -104,7 +117,7 @@ describe('DshAgentBridge', () => {
     expect(bridge.status.agentState).toBe('TOOL_RUNNING');
     expect(bridge.status.toolName).toBe('bash');
     sessionEvent?.({ id: 's1' }, { type: 'tool/result', data: {} });
-    expect(bridge.status.agentState).toBe('THINKING');
+    expect(bridge.status.agentState).toBe('TOOL_RESULT');
     sessionEvent?.({ id: 's1' }, { type: 'turn/end', data: { reason: { kind: 'completed' } } });
     expect(bridge.status.agentState).toBe('SUCCESS');
   });
@@ -115,7 +128,7 @@ describe('DshAgentBridge', () => {
     const { bridge, handlers } = makeBridge(a, tts);
     handlers.get('agent/assistant-stream')?.({
       agent: { ...a, id: 'other' },
-      frame: { type: 'chunk', chunk: { type: 'text-delta', text: '不应播报。' } },
+      frame: { type: 'chunk', chunk: { type: 'text-delta', text: 'not spoken.' } },
     });
     expect(tts.speak).not.toHaveBeenCalled();
     expect(bridge.status.sessionId).toBe('s1');
@@ -142,7 +155,7 @@ describe('DshAgentBridge', () => {
       sequence: 1,
       timestamp: 1,
       type: 'speech.final',
-      payload: { utteranceId: 'u1', text: '你好' },
+      payload: { utteranceId: 'u1', text: 'hello' },
     });
     expect(a.followup).toHaveBeenCalledOnce();
     bridge.handleRuntimeEvent({

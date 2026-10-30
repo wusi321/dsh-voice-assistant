@@ -2,10 +2,10 @@
 
 跨平台、本地优先、支持连续对话 / 语音打断 / 桌宠联动的 DSH 语音助手。
 
-> 当前状态：**P2–P5 已完成（Windows 真机 + 本地模型；P5 未做真实 DSH 安装）**。
+> 当前状态：**P2–P6 已完成核心实现（Windows 真机 + 本地模型；P6 未做真实 dsh-pet 安装）**。
 > P1 骨架、真实音频、sherpa-onnx VAD/KWS/流式 ASR/TTS、协议/认证/心跳/重连、
-> Agent Bridge/Session 绑定/Assistant Stream/工具状态/TTS 输出均已实现；
-> dsh-pet 联动（P6）、全双工打断（P7）尚未实现。
+> Agent Bridge/Session 绑定/Assistant Stream/工具状态/TTS 输出、dsh-pet Bridge/
+> Avatar 状态/气泡/动画/Lock 均已实现；全双工打断（P7）、权限确认（P8）尚未实现。
 
 ## 已实现
 
@@ -19,6 +19,8 @@
 - P5：Agent Bridge（`followup/steer/cancel/whenIdle`）、Client 上报 Session 绑定、
   `agent/assistant-stream` 分句与 TTS、`session/event` 工具状态、Runtime TTS 播报；
   未在真实 DSH 中安装验收。
+- P6：PetBridge（dsh-pet HTTP `/dsh-pet-7340`）、Avatar 状态映射、气泡、动画、
+  Lock 续期/释放、可选 TTS Provider；未在真实 dsh-pet 安装中验收。
 - DSH 插件：Host 侧 Runtime 启停/发现/重连 + 只读状态路由；Client 侧设置页显示状态。
 - Windows/Ubuntu CI 配置（Python 3.11 + Node 24；本机未运行 GitHub Actions）。
 
@@ -52,6 +54,7 @@ Windows 下如果仓库路径包含非 ASCII 字符，见 [WINDOWS.md](docs/WIND
 | [P3 引擎报告](docs/P3_REPORT.md) | VAD/KWS/ASR/TTS Adapter、模型与真实 e2e |
 | [P4 通信报告](docs/P4_REPORT.md) | 协议/帧/认证/心跳/超时/重连测试 |
 | [P5 插件集成报告](docs/P5_REPORT.md) | Agent Bridge、Session 绑定、Assistant Stream、工具状态、TTS |
+| [P6 dsh-pet 报告](docs/P6_REPORT.md) | PetBridge、Avatar 状态、气泡/动画/Lock、TTS Provider |
 | [P1 计划](docs/P1_PLAN.md) | 目录、工作包、验收门、测试计划 |
 | [架构](docs/ARCHITECTURE.md) | 三层边界、进程/线程、单一播放权威、状态分离 |
 | [协议](docs/PROTOCOL.md) | 发现文件、认证、事件、二进制帧、重连 |

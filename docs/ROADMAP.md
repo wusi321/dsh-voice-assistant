@@ -8,7 +8,7 @@
 | P3 | done (local) | Wake/VAD/ASR/TTS adapters and local models | 3 real e2e tests pass; benchmark still pending |
 | P4 | done | Versioned protocol, auth, heartbeat, reconnect, timeouts | protocol/auth/timeout/reconnect tests pass |
 | P5 | done (core) | DSH Agent Bridge + settings/session UI | Agent/TTS tests pass; live DSH install pending |
-| P6 | planned | dsh-pet bridge: lock, animation, work status, bubble | avatar mapping test |
+| P6 | done (core) | dsh-pet bridge: lock, animation, work status, bubble | PetBridge/avatar tests pass; live dsh-pet install pending |
 | P7 | planned | Full duplex, barge-in, TTS/Agent/steer separation | interruption test matrix |
 | P8 | planned | Permission confirmation, audit, red-team | no vague-consent bypass |
 | P9 | planned | Windows installer + Ubuntu deb/systemd | clean-machine install |
@@ -34,3 +34,5 @@
   binary frame tests pass.
 - P5: `docs/P5_REPORT.md`; Agent Bridge/session/assistant-stream/tool status/TTS
   tests pass; live DSH installation remains.
+- P6: `docs/P6_REPORT.md`; PetBridge/avatar/bubble/lock/tests pass; live dsh-pet
+  installation and TTS provider MP3 path remain.

@@ -38,5 +38,11 @@
     "speaking": "播报中",
     "idle": "空闲"
   },
-  "notice": "P5：语音消息发送到当前 DSH Session，助手文本由本地 Runtime 播报。"
+  "pet": {
+    "label": "dsh-pet",
+    "avatar": "Avatar 状态",
+    "locked": "桌宠锁定",
+    "tts": "桌宠 TTS Provider"
+  },
+  "notice": "P6：Voice Runtime 独占播放；dsh-pet 接收气泡、动画、工作状态和 Lock。"
 }

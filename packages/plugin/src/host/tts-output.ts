@@ -20,6 +20,7 @@ export class TtsOutput {
   private current: string | null = null;
   private lastText = '';
   private readonly listeners = new Set<(status: TtsStatus) => void>();
+  private readonly textListeners = new Set<(text: string) => void>();
 
   constructor(ctx: HostContext, manager: RuntimeManager, config: Config) {
     this.ctx = ctx;
@@ -38,6 +39,12 @@ export class TtsOutput {
   onStatus(listener: (status: TtsStatus) => void): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
+  }
+
+  /** Receives every sentence accepted for speech (for pet bubbles). */
+  onText(listener: (text: string) => void): () => void {
+    this.textListeners.add(listener);
+    return () => this.textListeners.delete(listener);
   }
 
   speak(text: string): boolean {
@@ -59,6 +66,13 @@ export class TtsOutput {
       this.current = utteranceId;
       this.lastText = clean.slice(0, 200);
       this.emit();
+      for (const listener of this.textListeners) {
+        try {
+          listener(clean);
+        } catch {
+          // Bubble/avatar consumers are advisory.
+        }
+      }
     }
     return accepted;
   }

@@ -38,5 +38,11 @@
     "speaking": "Speaking",
     "idle": "Idle"
   },
-  "notice": "P5: voice messages target the active DSH Session; assistant text is spoken by the local Runtime."
+  "pet": {
+    "label": "dsh-pet",
+    "avatar": "Avatar state",
+    "locked": "Pet lock",
+    "tts": "Pet TTS provider"
+  },
+  "notice": "P6: Voice Runtime owns playback; dsh-pet receives bubbles, animation, work status, and a lock."
 }

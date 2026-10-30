@@ -16,10 +16,20 @@ const config: Config = {
   fixedSessionId: '',
   cancelTimeoutMs: 1_000,
   speakAssistant: true,
+  petEnabled: false,
+  petBaseUrl: '',
+  petId: 'main',
+  petLockTtlMs: 1_000,
+  petBridgeTimeoutMs: 1_000,
+  petBubbleEnabled: true,
+  petAnimationEnabled: true,
+  petUseWorkStatus: true,
+  petTtsProvider: false,
+  petTtsProviderCommand: '',
 };
 
 describe('host plugin entry', () => {
-  it('registers four effects and cleans up', () => {
+  it('registers six effects and cleans up', () => {
     const cleanups: Array<() => void> = [];
     const ctx = {
       effect: (register: () => void | (() => void)) => {
@@ -33,7 +43,7 @@ describe('host plugin entry', () => {
     };
 
     apply(ctx as any, config);
-    expect(cleanups).toHaveLength(4);
+    expect(cleanups).toHaveLength(6);
     for (const cleanup of cleanups) cleanup();
   });
 });

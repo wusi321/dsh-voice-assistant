@@ -49,3 +49,15 @@ voice routing target and never executes an Agent command. The route validates a
 small JSON body (≤8 KiB) and a non-empty `sessionId`. It must not be exposed
 publicly or extended with Agent/TTS control without token and CSRF/origin checks
 equivalent to a privileged local API.
+
+## dsh-pet bridge
+
+- dsh-pet's `/dsh-pet-7340` route has no authentication of its own; the bridge
+  only talks to `127.0.0.1` on DSH's web port or an explicitly configured
+  `petBaseUrl`. Do not expose that port publicly.
+- The pet lock is a cooperation mechanism, not a security boundary. A user can
+  always force-release it; the plugin must stop writing and never fight the user.
+- Assistant bubbles receive the same sanitized text as TTS; reasoning/tool
+  arguments are never sent to dsh-pet.
+- The optional dsh-pet TTS provider is disabled by default and requires an
+  explicit MP3 synthesizer command. It must not run alongside Runtime playback.

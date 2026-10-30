@@ -30,6 +30,14 @@ P3 uses local models outside the repository; see `docs/P3_REPORT.md` for hashes
 and license status. Deterministic fakes remain in `engines/fake.py` for tests and
 `--fake-audio`.
 
+## dsh-pet TTS Provider
+
+dsh-pet's `petApi7340.voice.register` is a separate, optional sink. The adapter
+(`packages/plugin/src/host/pet-tts-provider.ts`) is OFF by default because the
+Voice Runtime must own playback. It requires a real MP3 synthesizer command,
+enforces 500 UTF-16 chars / 15 s / non-empty MP3 bytes, and unregisters on
+dispose. It never converts PCM/WAV into a fake `.mp3` payload.
+
 ## Planned implementations (P5+)
 
 | Adapter | Candidate | License status |

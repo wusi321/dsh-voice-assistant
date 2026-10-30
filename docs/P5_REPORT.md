@@ -49,7 +49,7 @@
 |---|---|
 | `turn/start` | `THINKING` |
 | `tool/call` | `TOOL_RUNNING`（记录 tool name） |
-| `tool/result` | `THINKING` |
+| `tool/result` | `TOOL_RESULT` |
 | `approval/asked` | `WAITING_CONFIRMATION` |
 | `turn/end.completed` | `SUCCESS` |
 | `turn/end.aborted` | `CANCELLED` |

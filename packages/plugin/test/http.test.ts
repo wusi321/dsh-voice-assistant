@@ -20,6 +20,16 @@ const config: Config = {
   fixedSessionId: '',
   cancelTimeoutMs: 1_000,
   speakAssistant: true,
+  petEnabled: false,
+  petBaseUrl: '',
+  petId: 'main',
+  petLockTtlMs: 1_000,
+  petBridgeTimeoutMs: 1_000,
+  petBubbleEnabled: true,
+  petAnimationEnabled: true,
+  petUseWorkStatus: true,
+  petTtsProvider: false,
+  petTtsProviderCommand: '',
 };
 
 function agent(id: string): DshAgent {
@@ -80,7 +90,11 @@ describe('HTTP routes', () => {
     };
     const bridge: any = { status: { sessionId: null, agentState: 'IDLE' } };
     const tts: any = { status: { speaking: false } };
-    registerStatusRoute(ctx, manager, binder, bridge, tts, true);
+    const pet: any = {
+      status: { connection: 'disabled', petId: 'main', locked: false, avatarState: 'idle' },
+    };
+    const petTts: any = { status: { state: 'disabled', reason: 'off' } };
+    registerStatusRoute(ctx, manager, binder, bridge, tts, pet, petTts, true);
 
     const first = response();
     await handler(request('GET', '/dsh-voice-assistant/status'), first.res);
@@ -115,7 +129,7 @@ describe('HTTP routes', () => {
       return () => {};
     });
     const binder = new SessionBinder(ctx, config);
-    registerStatusRoute(ctx, {} as any, binder, {} as any, {} as any, true);
+    registerStatusRoute(ctx, {} as any, binder, {} as any, {} as any, {} as any, {} as any, true);
 
     const missing = response();
     await handler(request('POST', '/dsh-voice-assistant/active-session', {}), missing.res);

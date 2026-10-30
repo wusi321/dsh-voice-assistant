@@ -57,9 +57,12 @@ DSH Voice Assistant is split into three independently runnable pieces:
   sends voice text through `agent.followup/steer`, cancels with `keepInbox`,
   consumes `agent/assistant-stream` (`text-delta` only), maps `session/event`
   tool states, and emits assistant sentences to the Runtime's TTS.
+- P6 dsh-pet: HTTP PetBridge on `/dsh-pet-7340`, avatar state priority, bubble
+  and animation writes under a renewable lock, optional dsh-pet TTS provider.
+  Runtime remains the only main playback authority.
 
-Not implemented: live DSH installation/verification, dsh-pet bridge (P6),
-full-duplex barge-in (P7), permission confirmation (P8), packaging (P9).
+Not implemented: live DSH/dsh-pet installation verification, full-duplex
+barge-in (P7), permission confirmation (P8), packaging (P9).
 
 ## Audio path
 
@@ -104,3 +107,19 @@ session.interrupt (Runtime) → TtsOutput.cancel or agent.cancel/steer
 
 The plugin never creates an Agent, never answers a DSH approval itself, and
 never reads another plugin's DOM or private state.
+
+## dsh-pet flow (P6)
+
+```text
+AgentBridgeStatus + TtsStatus + voiceState
+  → deriveAvatarState (Agent working wins over Voice IDLE)
+  → PetBridge → POST /dsh-pet-7340/work-status (optional)
+TTS sentence → PetBridge → acquire/renew lock → POST /broadcast
+explicit animation → acquire/renew lock → POST /anim
+plugin dispose → release lock → clear plugin-owned external work status
+```
+
+- PetBridge uses `ctx.webServer.port` by default; no fixed port.
+- The lock is a cooperation mechanism, not a permission boundary.
+- The optional dsh-pet TTS provider is OFF by default and requires a real MP3
+  synthesizer; Runtime playback remains the only default audio path.
