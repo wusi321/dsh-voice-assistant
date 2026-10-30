@@ -1,4 +1,4 @@
-"""Cross-platform application directories and private-file helpers."""
+﻿"""Cross-platform application directories and private-file helpers."""
 
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ APP_AUTHOR = "dsh-voice-assistant"
 
 def config_dir() -> Path:
     """Per-user configuration directory."""
-    return Path(platformdirs.user_config_path(APP_NAME, APP_AUTHOR, roaming=False))
+    return Path(platformdirs.user_config_path(APP_NAME, appauthor=False, roaming=False))
 
 
 def data_dir() -> Path:
     """Per-user data directory (models, logs, runtime state)."""
-    return Path(platformdirs.user_data_path(APP_NAME, APP_AUTHOR, roaming=False))
+    return Path(platformdirs.user_data_path(APP_NAME, appauthor=False, roaming=False))
 
 
 def runtime_dir() -> Path:
@@ -79,3 +79,4 @@ def is_linux() -> bool:
 
 def is_macos() -> bool:
     return sys.platform == "darwin"
+
