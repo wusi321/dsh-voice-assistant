@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import logging
 import time
@@ -78,10 +79,8 @@ class RuntimeWebSocketServer:
     async def stop(self) -> None:
         """Close client connections and the listener."""
         for client in list(self._clients):
-            try:
+            with contextlib.suppress(ConnectionClosed):
                 await client.close(code=1001, reason="runtime stopping")
-            except ConnectionClosed:
-                pass
         self._clients.clear()
         if self._server is not None:
             self._server.close()
@@ -125,20 +124,16 @@ class RuntimeWebSocketServer:
                 await self._handle_message(ws, raw)
         except ConnectionClosed:
             pass
-        except Exception:  # noqa: BLE001 - one client must not take down the server
+        except Exception:
             logger.exception("client handler failed")
-            try:
+            with contextlib.suppress(ConnectionClosed):
                 await ws.close(code=1011, reason="runtime error")
-            except ConnectionClosed:
-                pass
         finally:
             self._clients.discard(ws)
 
     async def _authenticate(self, ws: ServerConnection) -> bool:
         try:
-            raw = await asyncio.wait_for(
-                ws.recv(), timeout=self._config.auth_timeout_seconds
-            )
+            raw = await asyncio.wait_for(ws.recv(), timeout=self._config.auth_timeout_seconds)
         except TimeoutError:
             await self._send_auth_error(ws, "auth_failed", "authentication timed out")
             return False
@@ -163,13 +158,13 @@ class RuntimeWebSocketServer:
             await self._send_auth_error(ws, "auth_failed", "invalid runtime token")
             return False
         await ws.send(
-            AuthOk(protocolVersion=self._config.protocol_version, runtimeVersion=__version__).model_dump_json()
+            AuthOk(
+                protocolVersion=self._config.protocol_version, runtimeVersion=__version__
+            ).model_dump_json()
         )
         return True
 
-    async def _send_auth_error(
-        self, ws: ServerConnection, code: str, message: str
-    ) -> None:
+    async def _send_auth_error(self, ws: ServerConnection, code: str, message: str) -> None:
         response = AuthErrorResponse(code=code, message=message)  # type: ignore[arg-type]
         await ws.send(response.model_dump_json())
         await ws.close(code=4001, reason=code)

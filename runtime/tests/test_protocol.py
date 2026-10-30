@@ -18,13 +18,16 @@ def test_known_frame_matches_typescript_wire_format() -> None:
     assert frame.sample_rate == 16000
     assert frame.channels == 1
     assert frame.data == bytes(range(1, 9))
-    assert PcmFrame(
-        sequence=7,
-        timestamp_ms=1234,
-        sample_rate=16000,
-        channels=1,
-        data=bytes(range(1, 9)),
-    ).encode() == encoded
+    assert (
+        PcmFrame(
+            sequence=7,
+            timestamp_ms=1234,
+            sample_rate=16000,
+            channels=1,
+            data=bytes(range(1, 9)),
+        ).encode()
+        == encoded
+    )
 
 
 def test_frame_flags_round_trip() -> None:

@@ -15,9 +15,7 @@ class VoiceSession:
     state_machine: VoiceStateMachine
     sequence: int = 0
 
-    def next_event(
-        self, event_type: EventType, payload: dict[str, object]
-    ) -> dict[str, object]:
+    def next_event(self, event_type: EventType, payload: dict[str, object]) -> dict[str, object]:
         self.sequence += 1
         return make_event(
             event_type,

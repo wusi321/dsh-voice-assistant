@@ -7,9 +7,9 @@ deliberately narrow so the Session Manager never imports an engine SDK directly.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from enum import StrEnum
-from typing import AsyncIterator
 
 import numpy as np
 

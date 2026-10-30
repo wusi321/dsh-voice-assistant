@@ -59,7 +59,7 @@ class EngineManager:
         for engine in self._engines.values():
             try:
                 await engine.shutdown()
-            except Exception:  # noqa: BLE001 - shutdown must continue
+            except Exception:
                 logger.exception("engine shutdown failed", extra={"engine": engine.name})
 
     async def reset_all(self) -> None:

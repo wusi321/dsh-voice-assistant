@@ -7,7 +7,6 @@ import asyncio
 import importlib.util
 import json
 import logging
-import os
 import signal
 import sys
 from pathlib import Path
@@ -72,7 +71,9 @@ def run_doctor(config: RuntimeConfig, *, as_json: bool) -> int:
         except (OSError, ValueError) as exc:
             checks.append(_check("models_manifest", False, str(exc)))
     else:
-        checks.append(_check("models_manifest", False, "models/manifest.json not found", required=False))
+        checks.append(
+            _check("models_manifest", False, "models/manifest.json not found", required=False)
+        )
 
     for module, required in (("sherpa_onnx", False), ("sounddevice", False), ("livekit", False)):
         checks.append(
@@ -116,9 +117,13 @@ def run_probe(*, as_json: bool) -> int:
         print(f"available: {payload['available']} ({payload['reason'] or 'ok'})")
         print(f"default input: {payload['default_input']}  output: {payload['default_output']}")
         for device in payload["inputs"]:
-            print(f"  input  [{device['index']}] {device['name']} @ {device['default_samplerate']} Hz")
+            print(
+                f"  input  [{device['index']}] {device['name']} @ {device['default_samplerate']} Hz"
+            )
         for device in payload["outputs"]:
-            print(f"  output [{device['index']}] {device['name']} @ {device['default_samplerate']} Hz")
+            print(
+                f"  output [{device['index']}] {device['name']} @ {device['default_samplerate']} Hz"
+            )
     return 0 if devices.available else 1
 
 
@@ -163,7 +168,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
 
-    doctor = sub.add_parser("doctor", help="check Python, config, model manifest, and audio devices")
+    doctor = sub.add_parser(
+        "doctor", help="check Python, config, model manifest, and audio devices"
+    )
     doctor.add_argument("--config", type=Path, default=None)
     doctor.add_argument("--json", action="store_true")
 

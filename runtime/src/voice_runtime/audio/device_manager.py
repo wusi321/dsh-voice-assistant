@@ -87,7 +87,7 @@ def probe() -> DeviceProbe:
     try:
         devices = list_devices()
         default_input, default_output = default_devices()
-    except Exception as exc:  # noqa: BLE001 - doctor must report, not crash
+    except Exception as exc:
         return DeviceProbe(
             available=False,
             reason=f"{type(exc).__name__}: {exc}",

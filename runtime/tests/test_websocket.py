@@ -45,9 +45,7 @@ async def test_auth_ready_and_ping(server) -> None:
         assert ready["payload"]["protocolVersion"] == 1
         assert "fake-audio" not in ready["payload"]["capabilities"]
 
-        await ws.send(
-            json.dumps(make_event("ping", {"pingId": "p1"}, session_id="s1", sequence=1))
-        )
+        await ws.send(json.dumps(make_event("ping", {"pingId": "p1"}, session_id="s1", sequence=1)))
         pong = json.loads(await ws.recv())
         assert pong["type"] == "pong"
         assert pong["payload"]["pingId"] == "p1"
@@ -102,10 +100,6 @@ async def test_shutdown_event_set(server) -> None:
         await ws.send(await auth_message("secret"))
         await ws.recv()
         await ws.recv()
-        await ws.send(
-            json.dumps(
-                make_event("runtime.shutdown", {}, session_id="s1", sequence=2)
-            )
-        )
+        await ws.send(json.dumps(make_event("runtime.shutdown", {}, session_id="s1", sequence=2)))
         await asyncio.sleep(0.05)
     assert instance.shutdown_event.is_set()

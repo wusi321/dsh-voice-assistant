@@ -185,9 +185,19 @@ class PcmFrame:
         data = bytes(raw)
         if len(data) < PCM_FRAME_HEADER_BYTES:
             raise ProtocolError("frame is shorter than the header")
-        magic, version, flags, header_len, sequence, timestamp_ms, sample_rate, channels, fmt, _reserved, frame_count = struct.unpack(
-            "<4sBBHIIIHBBI", data[:PCM_FRAME_HEADER_BYTES]
-        )
+        (
+            magic,
+            version,
+            flags,
+            header_len,
+            sequence,
+            timestamp_ms,
+            sample_rate,
+            channels,
+            fmt,
+            _reserved,
+            frame_count,
+        ) = struct.unpack("<4sBBHIIIHBBI", data[:PCM_FRAME_HEADER_BYTES])
         if magic != PCM_FRAME_MAGIC:
             raise ProtocolError("bad frame magic")
         if version != 1:
