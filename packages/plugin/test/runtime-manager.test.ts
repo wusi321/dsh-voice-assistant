@@ -67,4 +67,26 @@ describe('RuntimeManager', () => {
     expect(manager.status.detail).toContain('runtime discovery not found');
     manager.stop();
   });
+
+  it('reconnects after a failed connection', async () => {
+    vi.useFakeTimers();
+    let attempts = 0;
+    const close = vi.fn();
+    const manager = new RuntimeManager(context() as any, config, {
+      readDiscovery: async () => info,
+      isProcessAlive: () => true,
+      connect: async () => {
+        attempts += 1;
+        if (attempts === 1) throw new Error('runtime offline');
+        return { close } as unknown as RuntimeClient;
+      },
+    });
+    await manager.start();
+    expect(manager.status.state).toBe('error');
+    await vi.advanceTimersByTimeAsync(150);
+    expect(manager.status.state).toBe('connected');
+    expect(attempts).toBe(2);
+    manager.stop();
+    vi.useRealTimers();
+  });
 });

@@ -24,6 +24,7 @@ full = [
     "soundfile>=0.12,<1",
     "livekit>=1.2,<2",
     "sherpa-onnx>=1.10.45,<2",
+    "onnxruntime>=1.22,<2",
 ]
 
 [dependency-groups]
@@ -64,5 +65,5 @@ exclude = ["tests"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "tests"]
 addopts = "-ra"

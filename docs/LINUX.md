@@ -45,11 +45,13 @@ uv run voice-runtime daemon --fake-audio
 | Discovery | `<data>/runtime.json` |
 | Models (planned) | `<data>/models` |
 
-## Audio (P2, not implemented)
+## Audio (P2, Linux pending)
 
-P2 must verify PipeWire and PulseAudio: device enumeration, default source/sink,
-separate input/output devices, sample-rate conversion, hot-plug, and unplug
-recovery. The Runtime must not assume 16 kHz hardware input.
+P2 implements device enumeration, separate input/output streams, resampling,
+device switching, and restart-on-error. The Mock backend tests run on
+`ubuntu-latest` CI. **Real PipeWire/PulseAudio hardware verification is still
+pending**: default source/sink, 44.1/48/16 kHz, hot-plug, and AEC need an Ubuntu
+machine with audio. The Runtime does not assume 16 kHz hardware input.
 
 ## Service (P9)
 

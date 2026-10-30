@@ -46,12 +46,13 @@ removed on graceful shutdown.
 | Discovery | `%LOCALAPPDATA%\dsh-voice-assistant\runtime.json` |
 | Models (planned) | `%LOCALAPPDATA%\dsh-voice-assistant\models` |
 
-## Audio (P2, not implemented)
+## Audio (P2, Windows verified)
 
-No microphone or speaker stream is opened in P1. P2 must verify WASAPI shared
-mode, 48 kHz/44.1 kHz/16 kHz devices, separate input/output devices, and
-unplug/replug recovery. AEC will use a software reference from the playback
-scheduler, not WASAPI loopback by default.
+`voice-runtime probe` enumerates the machine's devices; P2 verified 44.1 kHz
+default input/output, 0.5 s real capture, and a 0.2 s real playback smoke test on
+Windows. Capture and playback are separate streams, so different devices work.
+AEC uses a software reference from the playback scheduler; real echo/barge-in
+testing is still P7. Bluetooth/exclusive-mode matrices are not yet covered.
 
 ## Known development issue
 

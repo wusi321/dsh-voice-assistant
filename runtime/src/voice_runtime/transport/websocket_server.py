@@ -118,7 +118,15 @@ class RuntimeWebSocketServer:
             if not await self._authenticate(ws):
                 return
             await self._send_ready(ws)
-            async for raw in ws:
+            while True:
+                try:
+                    raw = await asyncio.wait_for(
+                        ws.recv(), timeout=self._config.idle_timeout_seconds
+                    )
+                except TimeoutError:
+                    await self._send_error(ws, "timeout", "client heartbeat timed out")
+                    await ws.close(code=4002, reason="heartbeat timeout")
+                    break
                 await self._handle_message(ws, raw)
         except ConnectionClosed:
             pass

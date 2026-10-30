@@ -9,5 +9,5 @@ command -v uv >/dev/null || { echo "uv is required (https://docs.astral.sh/uv/)"
 cd "$ROOT"
 pnpm install
 cd "$ROOT/runtime"
-uv sync --python 3.11
+uv sync --python 3.11 --extra full
 echo "Install complete. Run: pnpm -r test; cd runtime; uv run voice-runtime doctor"

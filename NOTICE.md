@@ -18,8 +18,11 @@ does not relicense third-party components or model weights.
 | NumPy | Audio buffers and DSP | BSD-3-Clause |
 | SciPy | Polyphase resampling | BSD-3-Clause |
 | websockets | Runtime WebSocket transport | BSD-3-Clause |
-| sherpa-onnx | VAD / KWS / ASR / TTS runtime | Apache-2.0 |
-| livekit (planned, P2) | WebRTC Audio Processing (AEC) | Apache-2.0 |
+| sherpa-onnx / sherpa-onnx-core | VAD / KWS / ASR / TTS runtime | Apache-2.0 |
+| onnxruntime | Model inference runtime | MIT |
+| sounddevice / PortAudio | Audio capture and playback | MIT |
+| soundfile | WAV read/write in tests | BSD-3-Clause |
+| livekit | WebRTC Audio Processing (AEC) | Apache-2.0 |
 
 ## Plugin and UI dependencies
 
@@ -43,9 +46,10 @@ not be selected as defaults.
 | Model | Task | Status |
 |---|---|---|
 | Silero VAD (`silero_vad.onnx`) | Voice activity detection | MIT; default candidate |
-| Kokoro multi-lang v1.1 | TTS | Apache-2.0; default candidate |
-| sherpa-onnx KWS (WenetSpeech/GigaSpeech) | Wake word | Runtime Apache-2.0; weights to verify |
-| sherpa-onnx streaming Zipformer | Streaming ASR | Runtime Apache-2.0; weights to verify |
+| Kokoro multi-lang v1.1 | TTS | Apache-2.0; candidate, not yet tested locally |
+| sherpa-onnx KWS (WenetSpeech 3.3M) | Chinese wake word | Runtime Apache-2.0; weights unverified, local test only |
+| sherpa-onnx streaming Zipformer zh 14M | Streaming ASR | Runtime Apache-2.0; weights unverified, local test only |
+| vits-piper-zh_CN-huayan-medium | Chinese TTS (P3 test) | Piper model card; local test only |
 | SenseVoice small | Optional second-pass ASR | FunASR model license; not a default |
 
 Do not redistribute non-commercial or unverified model weights. See

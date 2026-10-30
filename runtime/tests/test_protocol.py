@@ -90,6 +90,21 @@ def test_event_rejects_unknown_type() -> None:
         )
 
 
+def test_event_rejects_missing_payload_fields() -> None:
+    with pytest.raises(ProtocolError, match="missing required"):
+        parse_event(
+            {
+                "version": 1,
+                "id": "e1",
+                "sessionId": "s1",
+                "sequence": 1,
+                "timestamp": 1,
+                "type": "tts.speak",
+                "payload": {"utteranceId": "u1"},
+            }
+        )
+
+
 def test_event_rejects_negative_sequence() -> None:
     with pytest.raises(ProtocolError):
         parse_event(

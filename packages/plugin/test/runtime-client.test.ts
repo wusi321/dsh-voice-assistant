@@ -86,4 +86,27 @@ describe('RuntimeClient', () => {
     ).rejects.toThrow(/bad token/);
     client.close();
   });
+
+  it('closes when the heartbeat is not answered', async () => {
+    const { port } = await startFakeRuntime('secret');
+    const states: string[] = [];
+    const client = new RuntimeClient({
+      heartbeatIntervalMs: 30,
+      heartbeatTimeoutMs: 60,
+      onState: (state) => states.push(state),
+    });
+    await client.connect({
+      pid: process.pid,
+      host: '127.0.0.1',
+      port,
+      token: 'secret',
+      runtimeVersion: '0.1.0',
+      protocolVersion: 1,
+      startedAt: '2026-10-30T00:00:00+00:00',
+    });
+    await new Promise((resolve) => setTimeout(resolve, 180));
+    expect(states).toContain('closed');
+    expect(client.state).toBe('closed');
+    client.close();
+  });
 });

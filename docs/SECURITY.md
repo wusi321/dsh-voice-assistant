@@ -20,6 +20,8 @@ authority for Agent tools and approvals.
 ## Audio and transcripts
 
 - Raw recordings are not persisted by default.
+- The AEC reference is a bounded in-memory ring fed by the playback scheduler;
+  no WASAPI loopback or PulseAudio monitor recording is used by default.
 - Debug clips are off by default; enabling them must be explicit and bounded.
 - The logger redacts `token`, `authorization`, `audio`, `pcm`, `text`,
   `transcript`, and `recording` keys. Application logs must not print recognized

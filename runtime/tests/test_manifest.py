@@ -30,7 +30,9 @@ def test_candidates_are_not_auto_downloadable() -> None:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     for entry in manifest.get("candidates", []):
         assert entry["verified"] is False
-        assert entry.get("sha256") is None
+        digest = entry.get("sha256")
+        if digest is not None:
+            assert len(digest) == 64
 
 
 def test_downloader_list_and_dry_run() -> None:

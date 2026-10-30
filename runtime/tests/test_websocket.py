@@ -7,7 +7,7 @@ from websockets.exceptions import ConnectionClosed
 
 from voice_runtime.config.schema import RuntimeConfig
 from voice_runtime.transport.authentication import TokenAuth
-from voice_runtime.transport.protocol import make_event
+from voice_runtime.transport.protocol import PcmFrame, make_event
 from voice_runtime.transport.websocket_server import RuntimeWebSocketServer
 
 
@@ -93,6 +93,64 @@ async def test_binary_frame_is_accepted(server) -> None:
         assert error["type"] == "runtime.error"
         assert error["payload"]["code"] == "invalid_message"
     assert frames == []
+
+
+async def test_valid_binary_frame_is_delivered(server) -> None:
+    instance, port = server
+    frames = []
+
+    async def on_frame(_ws, frame):
+        frames.append(frame)
+
+    instance._on_frame = on_frame  # type: ignore[assignment]
+    frame = PcmFrame(
+        sequence=1,
+        timestamp_ms=0,
+        sample_rate=16_000,
+        channels=1,
+        data=b"\x00\x00" * 160,
+        final=True,
+    )
+    async with connect(f"ws://127.0.0.1:{port}") as ws:
+        await ws.send(await auth_message("secret"))
+        await ws.recv()
+        await ws.recv()
+        await ws.send(frame.encode())
+        await asyncio.sleep(0.05)
+    assert len(frames) == 1
+    assert frames[0].frame_count == 160
+    assert frames[0].final is True
+
+
+async def test_idle_timeout_closes_client() -> None:
+    config = RuntimeConfig(host="127.0.0.1", port=0, idle_timeout_seconds=0.5)
+    instance = RuntimeWebSocketServer(config, TokenAuth("secret"))
+    port = await instance.start()
+    try:
+        async with connect(f"ws://127.0.0.1:{port}") as ws:
+            await ws.send(await auth_message("secret"))
+            await ws.recv()
+            await ws.recv()
+            error = json.loads(await ws.recv())
+            assert error["type"] == "runtime.error"
+            assert error["payload"]["code"] == "timeout"
+            with pytest.raises(ConnectionClosed):
+                await ws.recv()
+    finally:
+        await instance.stop()
+
+
+async def test_auth_timeout_closes_client() -> None:
+    config = RuntimeConfig(host="127.0.0.1", port=0, auth_timeout_seconds=0.5)
+    instance = RuntimeWebSocketServer(config, TokenAuth("secret"))
+    port = await instance.start()
+    try:
+        async with connect(f"ws://127.0.0.1:{port}") as ws:
+            error = json.loads(await ws.recv())
+            assert error["type"] == "auth.error"
+            assert error["code"] == "auth_failed"
+    finally:
+        await instance.stop()
 
 
 async def test_shutdown_event_set(server) -> None:

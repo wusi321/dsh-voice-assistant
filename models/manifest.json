@@ -45,6 +45,69 @@
       "capabilities": ["tts", "zh", "en"],
       "verified": false,
       "note": "Candidate only. Record the archive SHA256 and size before enabling automatic download."
+    },
+    {
+      "model_id": "kws-zipformer-wenetspeech-3.3m",
+      "engine": "sherpa-onnx",
+      "task": "wake",
+      "language": "zh",
+      "version": "2024-01-01",
+      "download_url": [
+        "https://github.com/k2-fsa/sherpa-onnx/releases/download/kws-models/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01.tar.bz2"
+      ],
+      "sha256": "b2f7c89690dc8ce4c6ed6afeab7cd800c36ad1421fb6b6302b4a4b194cf7f35f",
+      "size": 32654866,
+      "license": "Model weights pending verification",
+      "license_url": "https://github.com/k2-fsa/sherpa-onnx/releases/tag/kws-models",
+      "commercial_use": false,
+      "redistributable": false,
+      "supported_platforms": ["windows-x64", "linux-x64"],
+      "sample_rate": 16000,
+      "capabilities": ["wake", "zh"],
+      "verified": false,
+      "note": "Used for local P3 verification only; do not redistribute until the weight license is cleared."
+    },
+    {
+      "model_id": "streaming-zipformer-zh-14m",
+      "engine": "sherpa-onnx",
+      "task": "asr",
+      "language": "zh",
+      "version": "2023-02-23",
+      "download_url": [
+        "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-streaming-zipformer-zh-14M-2023-02-23.tar.bz2"
+      ],
+      "sha256": "2cbd71b640d9c37d3784f29367333a4577b0398b62e9deeed418170b081cba8b",
+      "size": 74004050,
+      "license": "Model weights pending verification",
+      "license_url": "https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models",
+      "commercial_use": false,
+      "redistributable": false,
+      "supported_platforms": ["windows-x64", "linux-x64"],
+      "sample_rate": 16000,
+      "capabilities": ["asr", "streaming", "partial", "zh"],
+      "verified": false,
+      "note": "Used for local P3 verification only; weight license pending."
+    },
+    {
+      "model_id": "vits-piper-zh-cn-huayan-medium",
+      "engine": "sherpa-onnx",
+      "task": "tts",
+      "language": "zh",
+      "version": "medium",
+      "download_url": [
+        "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-zh_CN-huayan-medium.tar.bz2"
+      ],
+      "sha256": "dbdfec42b91d9cee31cce9ff4b3e9c305eb6fbf60546d071f7e46273554cce6b",
+      "size": 67255926,
+      "license": "Piper model card; verify before redistribution",
+      "license_url": "https://github.com/rhasspy/piper-voices",
+      "commercial_use": false,
+      "redistributable": false,
+      "supported_platforms": ["windows-x64", "linux-x64"],
+      "sample_rate": 22050,
+      "capabilities": ["tts", "zh"],
+      "verified": false,
+      "note": "Local P3 TTS test model; Kokoro remains the preferred default."
     }
   ]
 }

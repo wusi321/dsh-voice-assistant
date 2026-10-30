@@ -16,19 +16,28 @@ All speech engines are replaceable adapters behind the interfaces in
 `EngineManager` registers exactly one adapter per kind, initializes all, exposes
 health, and shuts down safely. The Session Manager never imports an engine SDK.
 
-## Planned implementations (P2/P3)
+## Implemented adapters (P3)
+
+| Adapter | Implementation | Status |
+|---|---|---|
+| VAD | `SherpaVAD` (Silero VAD, 512-sample windows) | tested on Windows |
+| Wake | `SherpaKWS` (WenetSpeech 3.3M, configurable keywords) | tested on Windows |
+| ASR | `SherpaASR` (streaming Zipformer zh 14M) | tested on Windows |
+| TTS | `SherpaTTS` (VITS/Piper; Kokoro config path) | VITS tested; Kokoro not yet |
+| AEC | `audio/aec.py` livekit WebRTC APM | 16k/10ms processing tested; real echo test pending |
+
+P3 uses local models outside the repository; see `docs/P3_REPORT.md` for hashes
+and license status. Deterministic fakes remain in `engines/fake.py` for tests and
+`--fake-audio`.
+
+## Planned implementations (P5+)
 
 | Adapter | Candidate | License status |
 |---|---|---|
-| VAD | sherpa-onnx Silero VAD | MIT; verified |
-| Wake | sherpa-onnx KWS (WenetSpeech / GigaSpeech) | runtime Apache-2.0; weights to verify |
-| ASR | sherpa-onnx streaming Zipformer (bilingual zh-en) | runtime Apache-2.0; weights to verify |
-| TTS | sherpa-onnx Kokoro multi-lang v1.1 | Apache-2.0; verified |
-| AEC | livekit WebRTC Audio Processing Module | Apache-2.0; Windows APM to verify |
+| TTS default | sherpa-onnx Kokoro multi-lang v1.1 | Apache-2.0; pending local e2e |
+| ASR bilingual | sherpa-onnx streaming Zipformer zh-en | weights to verify |
 | Optional second-pass ASR | SenseVoice small | FunASR model license; not a default |
-
-P1 ships deterministic fakes only (`engines/fake.py`) so protocol, state, and UI
-tests run without models or audio hardware.
+| Speaker verification | CAM++ | Apache-2.0; P6 optional |
 
 ## Model manifest rules
 

@@ -44,29 +44,42 @@ DSH Voice Assistant is split into three independently runnable pieces:
 5. **All speech engines are adapters.** The Session Manager does not import
    sherpa-onnx, livekit, or sounddevice. `EngineManager` owns the adapters.
 
-## P1 status
+## Status (P2–P4)
 
-Implemented:
+- P2 audio: device enumeration/selection, separate capture and playback streams,
+  bounded buffers, streaming resampling, software-reference WebRTC AEC, device
+  switching, restart-on-error, mock backend tests.
+- P3 engines: sherpa-onnx VAD, Chinese KWS, streaming Zipformer ASR, VITS/Piper
+  TTS; real local end-to-end tests for TTS, VAD → ASR, and KWS.
+- P4 transport: versioned JSON events, binary PCM frames, token auth, heartbeat,
+  idle/auth/connect timeouts, exponential-backoff reconnect, event tests.
+- P1 scaffold and DSH plugin skeleton remain.
 
-- Monorepo, strict TypeScript, Ruff/mypy/pytest, Vitest, Windows/Ubuntu CI.
-- Versioned JSON control events and binary PCM frame codec.
-- Runtime daemon: config, discovery file, token auth, WebSocket handshake,
-  heartbeat (`ping`/`pong`), graceful shutdown, status/health skeleton.
-- Audio ring buffer and streaming resampler.
-- Voice state machine and Avatar projection.
-- Engine interfaces and deterministic fakes.
-- DSH plugin host: Runtime spawn/attach, reconnect, read-only status route.
-- DSH client: settings section with Runtime status.
+Not implemented: DSH Agent bridge and live settings/mic UI (P5), dsh-pet bridge
+(P6), full-duplex barge-in (P7), permission confirmation (P8), packaging (P9).
 
-Not implemented (P2+): microphone capture, speaker playback, real VAD/KWS/ASR/
-TTS/AEC, Agent bridge, barge-in, dsh-pet bridge, packaging.
+## Audio path
 
-## Process and concurrency model (planned)
+```text
+mic (device rate) → CaptureStream ring → StreamingResampler → 16 kHz
+  → WebRTCAEC(mic, reference) → clean ring / on_capture
+speaker (device rate) ← PlaybackStream ← PlaybackScheduler ← resampled TTS
+  └─ reference callback → StreamingResampler → 16 kHz reference ring
+```
+
+- `PlaybackScheduler` is the only writer to the speaker; `AudioIO` is the only
+  owner of capture/playback streams.
+- AEC reference is the exact speaker signal, not WASAPI loopback.
+- `AudioIO.restart()` and `switch_devices()` close and reopen both streams; the
+  caller decides when to retry.
+- Engine adapters are synchronous native calls wrapped by async interfaces;
+  TTS generation runs in `asyncio.to_thread` and yields chunks.
+
+## Process and concurrency model
 
 - The Runtime is one asyncio process. PortAudio callbacks only copy samples into
-  a bounded ring buffer; no model inference or blocking I/O runs in a callback.
-- ASR/TTS engines may use worker threads/processes; the interface is async and
-  cancellation is explicit.
-- The DSH plugin host is one Node event loop. It owns one RuntimeClient and
-  reconnects with exponential backoff.
+  bounded ring buffers; no model inference or blocking I/O runs in a callback.
+- VAD/ASR/TTS run in the Runtime process; TTS generation uses a worker thread.
+- The DSH plugin host is one Node event loop. It owns one RuntimeClient,
+  sends application heartbeats, and reconnects with exponential backoff.
 - The DSH client page only polls non-sensitive status; it never receives audio.

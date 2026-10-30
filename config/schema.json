@@ -190,8 +190,15 @@
     "auth_timeout_seconds": {
       "default": 5.0,
       "maximum": 30.0,
-      "minimum": 1.0,
+      "minimum": 0.5,
       "title": "Auth Timeout Seconds",
+      "type": "number"
+    },
+    "idle_timeout_seconds": {
+      "default": 60.0,
+      "maximum": 3600.0,
+      "minimum": 0.5,
+      "title": "Idle Timeout Seconds",
       "type": "number"
     },
     "heartbeat_interval_seconds": {

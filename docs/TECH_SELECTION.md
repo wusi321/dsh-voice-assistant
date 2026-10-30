@@ -14,15 +14,15 @@
 | Runtime | 语言 | Python | 3.11.x | PSF | Win/Linux | ✅ |
 | Runtime | 包管理 | uv | 最新稳定 | Apache-2.0/MIT | Win/Linux | ✅ |
 | Runtime | 配置 | Pydantic v2 + pydantic-settings | 2.x | MIT | 全平台 | ✅ |
-| Runtime | 音频 I/O | sounddevice（PortAudio） | 0.5.x | MIT | Win/Linux | 🟡 需双平台设备实测 |
+| Runtime | 音频 I/O | sounddevice（PortAudio） | 0.5.x | MIT | Win/Linux | ✅ Windows 实测；Linux 待真机 |
 | Runtime | 数值/重采样 | NumPy + SciPy `resample_poly` | NumPy 2.x / SciPy 1.14+ | BSD-3 | 全平台 | ✅ |
-| Runtime | VAD | sherpa-onnx Silero VAD | sherpa-onnx 1.10.45（审计时 PyPI 最新；任务书写的 1.13 尚未发布，以实际可用版本为准） | Apache-2.0（代码）/ MIT（模型） | 全平台 | ✅ |
-| Runtime | 唤醒 | sherpa-onnx KeywordSpotter | 同上 | Apache-2.0（代码）；模型许可待核 | 全平台 | 🟡 模型许可 |
-| Runtime | ASR | sherpa-onnx **流式** Zipformer（中英） | 同上 | Apache-2.0（代码）；模型许可待核 | 全平台 | 🟡 精度/许可 |
+| Runtime | VAD | sherpa-onnx Silero VAD | sherpa-onnx 1.13.8 | Apache-2.0（代码）/ MIT（模型） | 全平台 | ✅ 本地 e2e |
+| Runtime | 唤醒 | sherpa-onnx KeywordSpotter | 同上 | Apache-2.0（代码）；模型许可待核 | 全平台 | ✅ 本地 e2e；许可待核 |
+| Runtime | ASR | sherpa-onnx **流式** Zipformer（中文 14M） | 同上 | Apache-2.0（代码）；模型许可待核 | 全平台 | ✅ 本地 e2e |
 | Runtime | ASR 兜底 | SenseVoice small int8（非流式，可选） | 同上 | **FunASR model license（非 Apache）** | 全平台 | 🟡 需法务确认，不默认捆绑 |
-| Runtime | TTS | sherpa-onnx Kokoro multi-lang v1.1 | 同上 | **Apache-2.0** | 全平台 | ✅ |
-| Runtime | AEC | livekit `rtc.AudioProcessingModule`（WebRTC APM） | livekit 1.2.0 | Apache-2.0 | Win x64 / Linux x64 | 🟡 需确认 Windows wheel 暴露 APM |
-| Runtime | 播放调度 | 自研 `PlaybackScheduler` + sounddevice OutputStream | — | 本项目 | 全平台 | ✅ 设计 |
+| Runtime | TTS | sherpa-onnx VITS/Piper（测试）/ Kokoro（默认候选） | 同上 | VITS 模型卡待核；Kokoro Apache-2.0 | 全平台 | ✅ VITS 本地 e2e；Kokoro 待测 |
+| Runtime | AEC | livekit `rtc.AudioProcessingModule`（WebRTC APM） | livekit 1.2.0 | Apache-2.0 | Win x64 / Linux x64 | ✅ 16k/10ms 处理；真实回声待 P7 |
+| Runtime | 播放调度 | 自研 `PlaybackScheduler` + sounddevice OutputStream | — | 本项目 | 全平台 | ✅ Windows 实测 |
 | Runtime | WebSocket/HTTP | FastAPI + uvicorn（或 `websockets` + 轻量 HTTP） | FastAPI 0.115+ | MIT | 全平台 | ✅ |
 | Runtime | 日志 | structlog/stdlib logging + 脱敏过滤器 | — | 本项目 | 全平台 | ✅ |
 | Runtime | 测试 | pytest + pytest-asyncio + numpy fixtures | 8.x | MIT | 全平台 | ✅ |
@@ -143,8 +143,8 @@ Jarvis 的 `OfflineRecognizer` 只能对完整 VAD 段转写（`jarvis/models.py
 
 | ID | 事项 | 验证方法 | 阻塞阶段 |
 |---|---|---|---|
-| V-01 | livekit 1.2.0 Windows wheel 是否暴露 `AudioProcessingModule` 且可处理 16k/10ms | 安装 wheel，跑 `python -c` + 10 s 回声样本 | P2 |
-| V-02 | sherpa-onnx 1.10.45 的 `OnlineRecognizer` API 与模型组合 | 跑官方示例 + 中文/英文 WAV | P3 |
+| V-01 | livekit 1.2.0 Windows wheel 是否暴露 `AudioProcessingModule` 且可处理 16k/10ms | ✅ 已确认；`test_aec.py` 通过 | P2 |
+| V-02 | sherpa-onnx 1.13.8 的 `OnlineRecognizer` API 与模型组合 | ✅ 已确认；中文 14M 流式 e2e 通过 | P3 |
 | V-03 | KWS/ASR/TTS 模型权重许可与再分发条款 | 读模型卡/MODEL_LICENSE；记录 URL 与结论 | P1（模型清单） |
 | V-04 | Windows 默认麦克风/扬声器不同设备时 PortAudio 行为 | 双设备矩阵实测 | P2 |
 | V-05 | Ubuntu 22.04 PipeWire/PulseAudio 设备枚举与热插拔 | 实机 + `pactl`/`wpctl` | P2 |

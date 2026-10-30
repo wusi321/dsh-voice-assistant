@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.0] - 2026-10-30
+
+### Added
+
+- P2 audio system: injectable PortAudio backend, device enumeration/selection, separate capture and playback streams, bounded ring buffers, streaming resampling, software-reference WebRTC AEC, device switching, restart-on-error.
+- P3 sherpa-onnx adapters: Silero VAD, Chinese KWS, streaming Zipformer ASR with partials, VITS/Piper TTS (Kokoro config path). Real local-model e2e tests for TTS, VAD→ASR, and KWS.
+- P4 transport hardening: payload validation, application heartbeat, idle/auth/connect timeouts, exponential reconnect, binary frame delivery, heartbeat/reconnect tests.
+- `models/manifest.json` candidates for local P2/P3 test models with hashes and license status.
+
+### Notes
+
+- Windows real-device capture/playback verified; Ubuntu hardware verification remains.
+- Kokoro is not downloaded or tested yet; VITS/Piper is used for P3 TTS e2e.
+- KWS/ASR weight licenses remain unverified and are not auto-downloaded.
+
 ## [0.1.0] - 2026-10-30
 
 ### Added

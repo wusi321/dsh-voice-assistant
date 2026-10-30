@@ -58,7 +58,8 @@ class RuntimeConfig(BaseSettings):
     host: str = "127.0.0.1"
     port: int = Field(default=0, ge=0, le=65_535)
     protocol_version: int = Field(default=1, ge=1)
-    auth_timeout_seconds: float = Field(default=5.0, ge=1.0, le=30.0)
+    auth_timeout_seconds: float = Field(default=5.0, ge=0.5, le=30.0)
+    idle_timeout_seconds: float = Field(default=60.0, ge=0.5, le=3600.0)
     heartbeat_interval_seconds: float = Field(default=10.0, ge=2.0, le=60.0)
     max_connections: int = Field(default=8, ge=1, le=64)
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"

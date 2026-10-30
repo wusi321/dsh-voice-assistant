@@ -15,7 +15,7 @@ try {
   pnpm install
   Push-Location "$Root\runtime"
   try {
-    uv sync --python 3.11
+    uv sync --python 3.11 --extra full
   } finally {
     Pop-Location
   }

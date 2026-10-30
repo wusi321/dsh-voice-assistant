@@ -3,10 +3,10 @@
 | Phase | Status | Goal | Exit gate |
 |---|---|---|---|
 | P0 | done | Source audit of Jarvis, dsh-pet, DSH API; selection/risk/P1 plan | three research docs reviewed |
-| P1 | **current** | Monorepo, protocol, Runtime skeleton, plugin skeleton, CI | G1–G8 in `P1_PLAN.md` |
-| P2 | planned | Real audio capture/playback, device management, AEC spike | device matrix + barge-in measurement |
-| P3 | planned | Wake/VAD/ASR/TTS adapters and model benchmarks | WER/CER + latency report |
-| P4 | planned | Full protocol: events, reconnect, cancellation, recovery | protocol conformance suite |
+| P1 | done | Monorepo, protocol, Runtime skeleton, plugin skeleton, CI | G1-G8 in `P1_PLAN.md` |
+| P2 | done (Windows) | Real audio capture/playback, device management, AEC | Windows real device + mock tests; Ubuntu HW pending |
+| P3 | done (local) | Wake/VAD/ASR/TTS adapters and local models | 3 real e2e tests pass; benchmark still pending |
+| P4 | done | Versioned protocol, auth, heartbeat, reconnect, timeouts | protocol/auth/timeout/reconnect tests pass |
 | P5 | planned | DSH Agent Bridge + full settings/mic UI | voice text into live Session |
 | P6 | planned | dsh-pet bridge: lock, animation, work status, bubble | avatar mapping test |
 | P7 | planned | Full duplex, barge-in, TTS/Agent/steer separation | interruption test matrix |
@@ -23,4 +23,12 @@
 5. Protocol JSON + binary round-trip and version mismatch rejection.
 6. Model manifest schema + downloader negative tests.
 7. Unauthenticated connections rejected; logs contain no token/transcript.
-8. Docs complete; no stub is described as a feature.
+8. Docs complete; no stub described as a feature.
+
+## P2-P4 acceptance
+
+- P2: `docs/P2_REPORT.md`; Windows real device capture/playback verified, Linux
+  hardware pending.
+- P3: `docs/P3_REPORT.md`; TTS, VAD+ASR, KWS real-model e2e verified.
+- P4: `docs/P4_REPORT.md`; auth, heartbeat, idle/auth timeout, reconnect and
+  binary frame tests pass.

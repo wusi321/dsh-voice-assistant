@@ -102,10 +102,15 @@ length, or count is rejected with a non-fatal `runtime.error` (`invalid_message`
 - The Runtime's own events use `sessionId: "runtime"` until a DSH session is
   bound; plugin commands carry the bound DSH `sessionId`.
 - `sequence` starts at 1 for each sender/session. The receiver may detect gaps;
-  P1 does not retransmit. A reconnect creates a new transport, not a new
+  P4 does not retransmit. A reconnect creates a new transport, not a new
   sequence space.
-- Reconnect is exponential backoff (500 ms → 15 s by default) with jitter
-  reserved for P4.
+- Application heartbeat: the plugin sends `ping` every 10 s and expects `pong`
+  with the same `pingId` within 5 s. The Runtime also uses WebSocket ping/pong.
+- Timeouts: auth handshake 5 s, idle client 60 s (configurable), connect 5 s on
+  the plugin. On auth failure the server closes with 4001; on idle timeout it
+  sends `runtime.error` (`timeout`) and closes with 4002.
+- Reconnect is exponential backoff (500 ms → 15 s by default). A successful
+  connect resets the backoff.
 - `runtime.shutdown` is a graceful request; the Runtime removes the discovery
   file before exit.
 

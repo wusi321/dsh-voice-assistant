@@ -89,6 +89,36 @@ class AuthErrorResponse(BaseModel):
     message: str
 
 
+REQUIRED_PAYLOAD_FIELDS: dict[str, tuple[str, ...]] = {
+    "runtime.ready": ("runtimeVersion", "protocolVersion", "capabilities"),
+    "runtime.error": ("code", "message", "fatal"),
+    "wake.detected": ("keyword", "score"),
+    "speech.started": ("utteranceId",),
+    "speech.partial": ("utteranceId", "text"),
+    "speech.final": ("utteranceId", "text"),
+    "tts.started": ("utteranceId", "text", "sampleRate", "channels"),
+    "tts.finished": ("utteranceId",),
+    "tts.interrupted": ("utteranceId", "reason"),
+    "device.changed": ("kind", "state"),
+    "session.state_changed": ("voiceState",),
+    "runtime.health": ("status", "uptimeMs", "engines"),
+    "pong": ("pingId", "receivedAt"),
+    "tts.speak": ("utteranceId", "text"),
+    "session.interrupt": ("action",),
+    "config.update": ("patch",),
+    "ping": ("pingId",),
+}
+
+
+def validate_payload(event: VoiceEvent) -> None:
+    required = REQUIRED_PAYLOAD_FIELDS.get(event.type)
+    if not required:
+        return
+    missing = [field for field in required if field not in event.payload]
+    if missing:
+        raise ProtocolError(f"{event.type} payload missing required field(s): {', '.join(missing)}")
+
+
 def make_event(
     event_type: EventType,
     payload: dict[str, Any],
@@ -107,6 +137,7 @@ def make_event(
         type=event_type,
         payload=payload,
     )
+    validate_payload(event)
     return event.model_dump(mode="json")
 
 
@@ -122,9 +153,11 @@ def parse_event(raw: str | bytes | dict[str, Any]) -> VoiceEvent:
     else:
         value = raw
     try:
-        return VoiceEvent.model_validate(value)
+        event = VoiceEvent.model_validate(value)
     except ValidationError as exc:
         raise ProtocolError(f"invalid event: {exc}") from exc
+    validate_payload(event)
+    return event
 
 
 @dataclass(frozen=True)

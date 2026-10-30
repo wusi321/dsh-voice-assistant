@@ -9,6 +9,8 @@ export type RuntimeConnectionState = 'idle' | 'connecting' | 'ready' | 'closed' 
 
 export interface RuntimeClientOptions {
   readonly connectTimeoutMs?: number;
+  readonly heartbeatIntervalMs?: number;
+  readonly heartbeatTimeoutMs?: number;
   readonly onEvent?: (event: AnyVoiceEvent) => void;
   readonly onState?: (state: RuntimeConnectionState, detail?: string) => void;
 }
@@ -20,11 +22,17 @@ export class RuntimeClient {
   private sequence = 0;
   private readonly sessionId = 'runtime';
   private readonly connectTimeoutMs: number;
+  private readonly heartbeatIntervalMs: number;
+  private readonly heartbeatTimeoutMs: number;
+  private heartbeatTimer: NodeJS.Timeout | null = null;
+  private pendingPing: { pingId: string; timer: NodeJS.Timeout } | null = null;
   private readonly onEvent?: (event: AnyVoiceEvent) => void;
   private readonly onState?: (state: RuntimeConnectionState, detail?: string) => void;
 
   constructor(options: RuntimeClientOptions = {}) {
     this.connectTimeoutMs = options.connectTimeoutMs ?? 5_000;
+    this.heartbeatIntervalMs = options.heartbeatIntervalMs ?? 10_000;
+    this.heartbeatTimeoutMs = options.heartbeatTimeoutMs ?? 5_000;
     this.onEvent = options.onEvent;
     this.onState = options.onState;
   }
@@ -72,7 +80,12 @@ export class RuntimeClient {
           return;
         }
         if (!message || typeof message !== 'object') return;
-        const record = message as { type?: unknown; code?: unknown; message?: unknown };
+        const record = message as {
+          type?: unknown;
+          code?: unknown;
+          message?: unknown;
+          payload?: { pingId?: unknown };
+        };
         if (record.type === 'auth.error') {
           fail(new Error(String(record.message ?? record.code ?? 'authentication failed')));
           return;
@@ -82,8 +95,16 @@ export class RuntimeClient {
           clearTimeout(timer);
           this.setState('ready');
           this.emit(message as AnyVoiceEvent);
+          this.startHeartbeat();
           resolve();
           return;
+        }
+        if (record.type === 'pong') {
+          const pingId = String(record.payload?.pingId ?? '');
+          if (this.pendingPing?.pingId === pingId) {
+            clearTimeout(this.pendingPing.timer);
+            this.pendingPing = null;
+          }
         }
         this.emit(message as AnyVoiceEvent);
       });
@@ -92,6 +113,7 @@ export class RuntimeClient {
         fail(error instanceof Error ? error : new Error(String(error))),
       );
       socket.on('close', () => {
+        this.stopHeartbeat();
         if (this.stateValue !== 'ready') {
           clearTimeout(timer);
           reject(new Error('runtime connection closed before ready'));
@@ -118,11 +140,39 @@ export class RuntimeClient {
   }
 
   close(): void {
+    this.stopHeartbeat();
     if (!this.socket) return;
     this.socket.removeAllListeners();
     this.socket.close();
     this.socket = null;
     this.setState('closed');
+  }
+
+  private startHeartbeat(): void {
+    this.stopHeartbeat();
+    this.heartbeatTimer = setInterval(() => {
+      if (this.pendingPing) return;
+      const pingId = randomUUID();
+      if (!this.send('ping', { pingId })) return;
+      const timer = setTimeout(() => {
+        this.pendingPing = null;
+        this.socket?.close(4002, 'heartbeat timeout');
+      }, this.heartbeatTimeoutMs);
+      timer.unref?.();
+      this.pendingPing = { pingId, timer };
+    }, this.heartbeatIntervalMs);
+    this.heartbeatTimer.unref?.();
+  }
+
+  private stopHeartbeat(): void {
+    if (this.heartbeatTimer) {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
+    if (this.pendingPing) {
+      clearTimeout(this.pendingPing.timer);
+      this.pendingPing = null;
+    }
   }
 
   private emit(event: AnyVoiceEvent): void {

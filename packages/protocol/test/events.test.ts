@@ -72,4 +72,13 @@ describe('voice event envelope', () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it('rejects a tts.speak without text', () => {
+    const result = voiceEventSchema.safeParse({
+      ...base,
+      type: 'tts.speak',
+      payload: { utteranceId: 'u-1' },
+    });
+    expect(result.success).toBe(false);
+  });
 });

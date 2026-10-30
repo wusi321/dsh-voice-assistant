@@ -1,3 +1,6 @@
+# Downloaded models / scratch data
+.cache/
+
 # Node
 node_modules/
 dist/
