@@ -18,6 +18,14 @@ dependencies = [
 [project.scripts]
 voice-runtime = "voice_runtime.daemon:cli"
 
+[project.optional-dependencies]
+full = [
+    "sounddevice>=0.5,<1",
+    "soundfile>=0.12,<1",
+    "livekit>=1.2,<2",
+    "sherpa-onnx>=1.10.45,<2",
+]
+
 [dependency-groups]
 dev = [
     "jsonschema>=4.23,<5",
