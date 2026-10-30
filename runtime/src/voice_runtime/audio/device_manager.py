@@ -1,4 +1,4 @@
-"""Audio device enumeration and capability probing.
+﻿"""Audio device enumeration and capability probing.
 
 `sounddevice` is imported lazily so unit tests and the `doctor` command still
 work on machines without PortAudio. P1 only reads capabilities; opening streams
@@ -70,7 +70,7 @@ def list_devices() -> list[AudioDevice]:
 
 
 def default_devices() -> tuple[int | None, int | None]:
-    import sounddevice as sd  # type: ignore[import-not-found]
+    import sounddevice as sd
 
     try:
         input_device, output_device = sd.default.device
@@ -104,3 +104,4 @@ def probe() -> DeviceProbe:
         default_input=default_input,
         default_output=default_output,
     )
+
