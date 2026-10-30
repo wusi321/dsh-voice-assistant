@@ -38,8 +38,8 @@ pnpm -r test       PASS
 ### 2.2 Python
 
 ```text
-uv run ruff format --check src tests   PASS (41 files formatted)
-uv run ruff check src tests            PASS
+uv run ruff format --check src tests ../scripts   PASS (43 files formatted)
+uv run ruff check src tests ../scripts            PASS
 uv run mypy src                        PASS (29 source files)
 uv run pytest -q                       PASS (55 passed, 1 skipped)
 ```
