@@ -41,7 +41,7 @@ dsh-voice-assistant/
 │       ├── package.json
 │       ├── plugin.json            # 可选：仅本工程元数据；DSH 不消费（DSH 只读 package.json.dsh）
 │       ├── tsconfig.json
-│       ├── tsdown.config.mjs
+│       ├── scripts/build-client.mjs
 │       ├── cordis.patch.yml
 │       ├── locale/{en,zh}.json
 │       ├── icon.svg
@@ -160,7 +160,7 @@ dsh-voice-assistant/
 - 初始化 pnpm workspace、`packages/protocol`、`packages/plugin`、`runtime/` uv 项目。
 - 根 `package.json` scripts：`lint`、`typecheck`、`test`、`build`、`format`。
 - Python：`ruff`、`mypy`、`pytest`、`pytest-asyncio`、`pytest-cov`。
-- TS：`typescript` strict、`eslint` flat config、`vitest`、`tsdown`。
+- TS：`typescript` strict、`eslint` flat config、`vitest`、`esbuild`。
 - `.gitignore`：`node_modules/`、`.venv/`、`dist/`、`models/*`（保留 manifest）、`*.wav`、日志、发现文件。
 - LICENSE/NOTICE/CONTRIBUTING/CHANGELOG 初版。
 
@@ -238,7 +238,7 @@ dsh-voice-assistant/
   - `EventRouter`：把 runtime 事件转成内部事件；P1 只处理 `runtime.ready`、`runtime.error`、`pong`。
   - `http.ts`：注册 `/dsh-voice-assistant/active-session`（P1 只返回 501/占位；P5 实现）。
 - Client：
-  - `client.js` 由 tsdown 产出 IIFE；`window.__ModuleLoader__.load({id, factory})`。
+  - `client.js` 由 esbuild 产出 IIFE；`window.__ModuleLoader__.load({id, factory})`。
   - 注册 `settings.section`（id `voice-assistant`，label 本地化），页面显示：Runtime 状态、版本、端口、发现文件路径、按钮“启动/停止/诊断”（P1 调 Host HTTP 占位）。
   - 所有注册 try/catch，失败不影响 DSH。
 - 测试：Vitest mock `child_process`、`ws`、`fs`；覆盖重连、发现文件解析、token 不日志、dispose。

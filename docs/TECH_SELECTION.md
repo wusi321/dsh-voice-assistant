@@ -31,7 +31,7 @@
 | 插件 | 语言 | TypeScript strict | 5.7+ | Apache-2.0 | 全平台 | ✅ |
 | 插件 | 运行时 | Node.js ≥22（DSH 0.2.1-rc.3 内置 Node 24.21） | Node 24.x | MIT | 全平台 | ✅ |
 | 插件 | 包管理 | pnpm workspace | 11.x | MIT | 全平台 | ✅ |
-| 插件 | 构建 | tsdown（Host ESM + Client IIFE） | 最新 | MIT | 全平台 | 🟡 需验证 DSH 模块表兼容 |
+| 插件 | 构建 | `tsc`（Host ESM）+ `esbuild`（Client IIFE） | 最新 | MIT | 全平台 | ✅ 已验证 |
 | 插件 | UI | DSH Client Slot（React 由 DSH 提供） | DSH 0.2.1-rc.3 | MIT | Web/桌面 | ✅ |
 | 插件 | 配置 | `@deepseek-ai/schemastery` `Config` | DSH 提供 | MIT | — | ✅ |
 | 插件 | 测试 | Vitest + DSH API Mock + WS Mock | 3.x | MIT | 全平台 | ✅ |

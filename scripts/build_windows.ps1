@@ -10,8 +10,8 @@ try {
   pnpm -r test
   Push-Location "$Root\runtime"
   try {
-    uv run ruff format --check src tests
-    uv run ruff check src tests
+    uv run ruff format --check src tests ../scripts
+    uv run ruff check src tests ../scripts
     uv run mypy src
     uv run pytest -q
   } finally {
@@ -21,3 +21,4 @@ try {
 } finally {
   Pop-Location
 }
+

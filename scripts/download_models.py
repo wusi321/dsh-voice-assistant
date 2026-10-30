@@ -76,9 +76,7 @@ def download(entry: dict[str, Any], target_dir: Path, *, accept_license: bool) -
     if not entry.get("verified") or not entry.get("sha256"):
         raise ManifestError(f"{entry['model_id']}: not verified; refusing download")
     if not entry.get("commercial_use") and not accept_license:
-        raise ManifestError(
-            f"{entry['model_id']}: non-commercial model requires --accept-license"
-        )
+        raise ManifestError(f"{entry['model_id']}: non-commercial model requires --accept-license")
     urls = entry.get("download_url") or []
     if not urls:
         raise ManifestError(f"{entry['model_id']}: no download URL")
@@ -87,9 +85,12 @@ def download(entry: dict[str, Any], target_dir: Path, *, accept_license: bool) -
     if not filename:
         raise ManifestError(f"{entry['model_id']}: cannot derive a filename")
     target = target_dir / filename
-    if target.exists() and target.stat().st_size == entry["size"]:
-        if sha256_file(target) == entry["sha256"]:
-            return target
+    if (
+        target.exists()
+        and target.stat().st_size == entry["size"]
+        and (sha256_file(target) == entry["sha256"])
+    ):
+        return target
 
     part = target.with_name(target.name + ".part")
     last_error: Exception | None = None
@@ -100,7 +101,8 @@ def download(entry: dict[str, Any], target_dir: Path, *, accept_license: bool) -
             if actual != entry["sha256"]:
                 part.unlink(missing_ok=True)
                 raise ManifestError(
-                    f"{entry['model_id']}: sha256 mismatch (expected {entry['sha256']}, got {actual})"
+                    f"{entry['model_id']}: sha256 mismatch "
+                    f"(expected {entry['sha256']}, got {actual})"
                 )
             os.replace(part, target)
             return target
@@ -123,9 +125,7 @@ def _fetch(url: str, part: Path, *, expected_size: int) -> None:
         with part.open("ab" if have else "wb") as handle:
             shutil.copyfileobj(response, handle)
     if part.stat().st_size != expected_size:
-        raise ManifestError(
-            f"size mismatch: expected {expected_size}, got {part.stat().st_size}"
-        )
+        raise ManifestError(f"size mismatch: expected {expected_size}, got {part.stat().st_size}")
 
 
 def verify_local(entry: dict[str, Any], root: Path) -> bool:

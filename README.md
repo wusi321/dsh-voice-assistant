@@ -2,8 +2,8 @@
 
 跨平台、本地优先、支持连续对话 / 语音打断 / 桌宠联动的 DSH 语音助手。
 
-> 当前状态：**P1 基础工程已完成**。协议、Runtime 骨架、DSH 插件骨架、CI 已可运行；
-> 真实麦克风 / 唤醒 / VAD / ASR / TTS / AEC 尚未实现（P2/P3）。
+> 当前状态：**P1 工程初始化完成（G4 真实 DSH 安装待验证）**。协议、Runtime 骨架、
+> 插件骨架、CI 配置已就绪；真实麦克风 / 唤醒 / VAD / ASR / TTS / AEC 尚未实现（P2/P3）。
 
 ## 已实现（P1）
 
@@ -12,7 +12,7 @@
 - `voice-runtime`：配置校验、发现文件（0600/ACL）、token 认证、WebSocket 握手、心跳、
   优雅退出、音频环形缓冲、流式重采样、Voice 状态机、Engine Adapter 接口与 fake。
 - DSH 插件：Host 侧 Runtime 启停/发现/重连 + 只读状态路由；Client 侧设置页显示状态。
-- Windows/Ubuntu CI（Python 3.11 + Node 24）。
+- Windows/Ubuntu CI 配置（Python 3.11 + Node 24；本机未运行 GitHub Actions）。
 
 ## 快速开始
 
