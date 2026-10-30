@@ -1,12 +1,16 @@
 import json
 from pathlib import Path
 
+import jsonschema
+
 from voice_runtime.config.schema import (
     RuntimeConfig,
     config_json_schema,
     default_config_dict,
     load_config,
 )
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_defaults_are_localhost_and_dynamic_port() -> None:
@@ -48,3 +52,10 @@ def test_default_dict_and_schema_are_json_safe() -> None:
     schema = config_json_schema()
     assert "properties" in schema
     assert "port" in schema["properties"]
+
+
+def test_committed_config_matches_schema() -> None:
+    data = json.loads((PROJECT_ROOT / "config" / "default.json").read_text(encoding="utf-8"))
+    schema = json.loads((PROJECT_ROOT / "config" / "schema.json").read_text(encoding="utf-8"))
+    jsonschema.validate(data, schema)
+    assert data == default_config_dict()

@@ -2,27 +2,53 @@
 
 跨平台、本地优先、支持连续对话 / 语音打断 / 桌宠联动的 DSH 语音助手。
 
-> 当前状态：**P0 源码审计完成，P1 尚未开始**。本目录目前只有审计与计划文档，没有可运行代码。
-> 所有结论以 2026-10-30 的本地源码/运行时为准；上游仓库 `GDDXX-Jarvis` 与 `dsh-pet` 保持只读。
+> 当前状态：**P1 基础工程已完成**。协议、Runtime 骨架、DSH 插件骨架、CI 已可运行；
+> 真实麦克风 / 唤醒 / VAD / ASR / TTS / AEC 尚未实现（P2/P3）。
 
-## 先读什么
+## 已实现（P1）
+
+- pnpm workspace + uv Python 项目；严格 TypeScript、ESLint、Vitest、Ruff、mypy、pytest。
+- `@dsh-voice/protocol`：版本化 `VoiceEvent`、错误码、28 字节二进制 PCM 帧头。
+- `voice-runtime`：配置校验、发现文件（0600/ACL）、token 认证、WebSocket 握手、心跳、
+  优雅退出、音频环形缓冲、流式重采样、Voice 状态机、Engine Adapter 接口与 fake。
+- DSH 插件：Host 侧 Runtime 启停/发现/重连 + 只读状态路由；Client 侧设置页显示状态。
+- Windows/Ubuntu CI（Python 3.11 + Node 24）。
+
+## 快速开始
+
+```bash
+pnpm install
+pnpm -r build
+pnpm -r test
+
+cd runtime
+uv sync --python 3.11
+uv run pytest
+uv run voice-runtime doctor
+uv run voice-runtime daemon --fake-audio
+```
+
+Windows 下如果仓库路径包含非 ASCII 字符，见 [WINDOWS.md](docs/WINDOWS.md) 的
+`PYTHONPATH` 说明。
+
+## 文档
 
 | 文档 | 内容 |
 |---|---|
-| [P0 最终报告](docs/P0_FINAL_REPORT.md) | 10 项交付：上游结构、可复用模块、dsh-pet 接口、DSH 真实 API、模型推荐、双平台、许可、选型调整、风险、P1 计划 |
-| [Jarvis 审计](docs/research/JARVIS_ANALYSIS.md) | GDDXX-Jarvis 的音频/AEC/唤醒/VAD/ASR/TTS/插件/平台逐项分析（GPL-3.0，只读参考） |
-| [dsh-pet 审计](docs/research/DSH_PET_ANALYSIS.md) | HTTP/OpenAPI、Cordis 服务、锁、动画、工作状态、TTS Provider、桌面/Web 差异 |
-| [DSH API 审计](docs/research/DSH_API_ANALYSIS.md) | DSH 0.2.1-rc.3 的插件 manifest、`ctx.agents`、`agent/assistant-stream`、Session、UI Slot、确认/权限 |
-| [技术选型](docs/TECH_SELECTION.md) | 依赖/模型/协议/平台选型与被否决方案 |
-| [风险清单](docs/RISK_REGISTER.md) | 18 条风险、等级、缓解与关闭门 |
-| [P1 计划](docs/P1_PLAN.md) | 目录结构、工作包、验收门、测试计划、9 天估算 |
+| [P1 计划](docs/P1_PLAN.md) | 目录、工作包、验收门、测试计划 |
+| [架构](docs/ARCHITECTURE.md) | 三层边界、进程/线程、单一播放权威、状态分离 |
+| [协议](docs/PROTOCOL.md) | 发现文件、认证、事件、二进制帧、重连 |
+| [安全](docs/SECURITY.md) | localhost、token、日志脱敏、权限确认 |
+| [引擎适配](docs/ENGINE_ADAPTERS.md) | Adapter 接口、模型清单与许可 |
+| [Windows](docs/WINDOWS.md) / [Linux](docs/LINUX.md) | 平台安装、路径、音频待办 |
+| [开发](docs/DEVELOPMENT.md) | 命令、测试、协议改动流程 |
+| [路线图](docs/ROADMAP.md) | P2–P10 与验收门 |
+| [P0 最终报告](docs/P0_FINAL_REPORT.md) | 审计结论、选型、风险 |
+| [Jarvis 审计](docs/research/JARVIS_ANALYSIS.md) | 上游语音实现分析 |
+| [dsh-pet 审计](docs/research/DSH_PET_ANALYSIS.md) | 桌宠接口与限制 |
+| [DSH API 审计](docs/research/DSH_API_ANALYSIS.md) | 0.2.1-rc.3 插件/Agent/Session/UI API |
 
-## 三条硬结论
+## 许可证
 
-1. **DSH 以 0.2.1-rc.3 为准**：桌面 GUI 内置运行时是 0.2.1-rc.3；PATH 上的 `dsh` 是 0.1.5-rc.1，不要用它安装/验证插件。
-2. **Jarvis 只能读，不能复制**：GPL-3.0；`piper-tts` 也是 GPL；openWakeWord 的 “hey jarvis” 模型是 CC BY-NC-SA 4.0。默认技术栈改用 Kokoro（Apache-2.0）+ sherpa-onnx 流式 ASR。
-3. **DSH 没有 host 侧 “active session” API**：需要用 Client 的 session-scoped Slot 上报 `sessionId`，再配合固定绑定/最近活动回退。
-
-## 下一步
-
-按 [P1 计划](docs/P1_PLAN.md) 建立骨架；在 P1-G4 通过前不实现真实语音引擎。
+Apache-2.0。上游 `GDDXX-Jarvis`（GPL-3.0）、`piper-tts`（GPL-3.0）与
+非商用模型均不作为默认依赖；详见 [NOTICE.md](NOTICE.md)。
