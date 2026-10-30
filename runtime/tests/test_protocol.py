@@ -7,7 +7,7 @@ from voice_runtime.transport.protocol import (
     parse_event,
 )
 
-KNOWN_FRAME_HEX = "5641503101001c0007000000d2040000803e00000100000100040000000102030405060708"
+KNOWN_FRAME_HEX = "5641503101001c0007000000d2040000803e000001000100040000000102030405060708"
 
 
 def test_known_frame_matches_typescript_wire_format() -> None:
