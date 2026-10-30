@@ -41,9 +41,7 @@ describe('voice event envelope', () => {
   });
 
   it('rejects an unknown event type', () => {
-    expect(
-      tryParseVoiceEvent({ ...base, type: 'does.not.exist', payload: {} }),
-    ).toBeNull();
+    expect(tryParseVoiceEvent({ ...base, type: 'does.not.exist', payload: {} })).toBeNull();
   });
 
   it('rejects a negative sequence', () => {

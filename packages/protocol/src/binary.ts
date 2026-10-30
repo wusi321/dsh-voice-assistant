@@ -1,9 +1,4 @@
-import {
-  PCM_FORMAT,
-  PCM_FRAME_HEADER_BYTES,
-  PCM_FRAME_MAGIC,
-  type PcmFormat,
-} from './version.js';
+import { PCM_FORMAT, PCM_FRAME_HEADER_BYTES, PCM_FRAME_MAGIC, type PcmFormat } from './version.js';
 
 /** Optional flags carried by a PCM frame. */
 export interface PcmFrameFlags {
@@ -53,7 +48,11 @@ function assertHeaderFields(frame: Omit<PcmFrame, 'data'>): void {
   ) {
     fail('timestampMs must be a uint32');
   }
-  if (!Number.isInteger(frame.sampleRate) || frame.sampleRate < 8_000 || frame.sampleRate > 192_000) {
+  if (
+    !Number.isInteger(frame.sampleRate) ||
+    frame.sampleRate < 8_000 ||
+    frame.sampleRate > 192_000
+  ) {
     fail('sampleRate must be 8000..192000');
   }
   if (!Number.isInteger(frame.channels) || frame.channels < 1 || frame.channels > 2) {
@@ -83,7 +82,10 @@ export function encodePcmFrame(frame: PcmFrame): Uint8Array {
   const view = new DataView(out.buffer);
   out.set(MAGIC_BYTES, 0);
   view.setUint8(4, 1); // frame version
-  view.setUint8(5, (frame.flags.discontinuity ? FLAG_DISCONTINUITY : 0) | (frame.flags.final ? FLAG_FINAL : 0));
+  view.setUint8(
+    5,
+    (frame.flags.discontinuity ? FLAG_DISCONTINUITY : 0) | (frame.flags.final ? FLAG_FINAL : 0),
+  );
   view.setUint16(6, HEADER_LENGTH, true);
   view.setUint32(8, frame.sequence, true);
   view.setUint32(12, frame.timestampMs, true);
@@ -113,7 +115,8 @@ export function decodePcmFrame(input: ArrayBuffer | Uint8Array): PcmFrame {
   const version = view.getUint8(4);
   if (version !== 1) fail(`unsupported frame version ${version}`);
   const headerLength = view.getUint16(6, true);
-  if (headerLength !== HEADER_LENGTH) fail(`header length ${headerLength}, expected ${HEADER_LENGTH}`);
+  if (headerLength !== HEADER_LENGTH)
+    fail(`header length ${headerLength}, expected ${HEADER_LENGTH}`);
   const flagsByte = view.getUint8(5);
   const format = view.getUint8(22);
   if (format !== PCM_FORMAT.PCM16_LE) fail(`unsupported format ${format}`);

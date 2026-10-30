@@ -213,7 +213,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.json_logs:
         updates["json_logs"] = True
     if updates:
-        config = config.model_copy(update=updates)
+        config = RuntimeConfig(**{**config.model_dump(), **updates})
 
     configure_logging(config.log_level, json_output=config.json_logs)
     try:

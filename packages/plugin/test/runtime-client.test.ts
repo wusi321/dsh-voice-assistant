@@ -11,7 +11,9 @@ afterEach(() => {
   for (const server of servers.splice(0)) server.close();
 });
 
-async function startFakeRuntime(validToken: string): Promise<{ port: number; wss: WebSocketServer }> {
+async function startFakeRuntime(
+  validToken: string,
+): Promise<{ port: number; wss: WebSocketServer }> {
   const wss = new WebSocketServer({ host: '127.0.0.1', port: 0 });
   servers.push(wss);
   await new Promise<void>((resolve) => wss.once('listening', resolve));

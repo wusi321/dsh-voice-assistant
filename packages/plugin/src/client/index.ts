@@ -1,10 +1,7 @@
 declare global {
   interface Window {
     __ModuleLoader__: {
-      load(definition: {
-        id: string;
-        factory: (require: (id: string) => any) => any;
-      }): void;
+      load(definition: { id: string; factory: (require: (id: string) => any) => any }): void;
     };
   }
 }
@@ -232,4 +229,3 @@ window.__ModuleLoader__.load({
     };
   },
 });
-

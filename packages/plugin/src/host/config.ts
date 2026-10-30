@@ -13,4 +13,3 @@ export const Config = z.object({
 });
 
 export type Config = Schemastery.TypeT<typeof Config>;
-

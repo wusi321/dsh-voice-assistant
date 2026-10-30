@@ -66,9 +66,7 @@ describe('binary PCM frame', () => {
 
   it('rejects a truncated payload', () => {
     const encoded = encodePcmFrame(frame());
-    expect(() => decodePcmFrame(encoded.subarray(0, encoded.byteLength - 1))).toThrow(
-      /expected/,
-    );
+    expect(() => decodePcmFrame(encoded.subarray(0, encoded.byteLength - 1))).toThrow(/expected/);
   });
 
   it('rejects an invalid sample rate', () => {

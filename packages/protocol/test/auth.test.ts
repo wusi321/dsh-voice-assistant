@@ -26,9 +26,10 @@ describe('authentication messages', () => {
   });
 
   it('parses auth.ok and auth.error', () => {
-    expect(authResponseSchema.parse({ type: 'auth.ok', protocolVersion: 1, runtimeVersion: '0.1.0' }).type).toBe(
-      'auth.ok',
-    );
+    expect(
+      authResponseSchema.parse({ type: 'auth.ok', protocolVersion: 1, runtimeVersion: '0.1.0' })
+        .type,
+    ).toBe('auth.ok');
     expect(
       authResponseSchema.parse({
         type: 'auth.error',

@@ -11,7 +11,11 @@ import {
   waitForDiscovery,
   type DiscoveryInfo,
 } from './discovery.js';
-import { RuntimeClient, type RuntimeClientOptions, type RuntimeConnectionState } from './runtime-client.js';
+import {
+  RuntimeClient,
+  type RuntimeClientOptions,
+  type RuntimeConnectionState,
+} from './runtime-client.js';
 import { log, type HostContext } from './types.js';
 
 export type RuntimeState = 'stopped' | 'starting' | 'connected' | 'error';
@@ -29,10 +33,7 @@ export interface RuntimeManagerDeps {
   readonly spawn?: typeof nodeSpawn;
   readonly readDiscovery?: typeof readDiscovery;
   readonly waitForDiscovery?: typeof waitForDiscovery;
-  readonly connect?: (
-    info: DiscoveryInfo,
-    options: RuntimeClientOptions,
-  ) => Promise<RuntimeClient>;
+  readonly connect?: (info: DiscoveryInfo, options: RuntimeClientOptions) => Promise<RuntimeClient>;
   readonly isProcessAlive?: (pid: number) => boolean;
 }
 
@@ -91,6 +92,7 @@ export class RuntimeManager {
     }
     this.client?.close();
     this.client = null;
+    this.attempt = 0;
     if (this.child && !this.child.killed) {
       this.child.kill();
     }

@@ -88,7 +88,9 @@ export class RuntimeClient {
         this.emit(message as AnyVoiceEvent);
       });
 
-      socket.on('error', (error) => fail(error instanceof Error ? error : new Error(String(error))));
+      socket.on('error', (error) =>
+        fail(error instanceof Error ? error : new Error(String(error))),
+      );
       socket.on('close', () => {
         if (this.stateValue !== 'ready') {
           clearTimeout(timer);

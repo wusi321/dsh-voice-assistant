@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  discoveryPathFor,
-  isProcessAlive,
-  parseDiscovery,
-} from '../src/host/discovery.js';
+import { discoveryPathFor, isProcessAlive, parseDiscovery } from '../src/host/discovery.js';
 
 const valid = {
   pid: process.pid,

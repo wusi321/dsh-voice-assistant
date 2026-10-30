@@ -35,8 +35,7 @@ export function registerStatusRoute(
   manager: RuntimeManager,
   enabled: boolean,
 ): () => void {
-  const webServer: WebServer | undefined =
-    ctx.webServer ?? ctx.get<WebServer>('webServer', false);
+  const webServer: WebServer | undefined = ctx.webServer ?? ctx.get<WebServer>('webServer', false);
   if (!enabled || !webServer) return () => {};
 
   return webServer.register({

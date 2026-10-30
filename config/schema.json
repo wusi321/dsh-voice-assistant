@@ -74,46 +74,31 @@
       "properties": {
         "wake": {
           "default": "sherpa_kws",
-          "enum": [
-            "sherpa_kws",
-            "fake"
-          ],
+          "enum": ["sherpa_kws", "fake"],
           "title": "Wake",
           "type": "string"
         },
         "vad": {
           "default": "silero",
-          "enum": [
-            "silero",
-            "fake"
-          ],
+          "enum": ["silero", "fake"],
           "title": "Vad",
           "type": "string"
         },
         "asr": {
           "default": "sherpa_streaming",
-          "enum": [
-            "sherpa_streaming",
-            "fake"
-          ],
+          "enum": ["sherpa_streaming", "fake"],
           "title": "Asr",
           "type": "string"
         },
         "tts": {
           "default": "kokoro",
-          "enum": [
-            "kokoro",
-            "fake"
-          ],
+          "enum": ["kokoro", "fake"],
           "title": "Tts",
           "type": "string"
         },
         "aec": {
           "default": "webrtc_apm",
-          "enum": [
-            "webrtc_apm",
-            "none"
-          ],
+          "enum": ["webrtc_apm", "none"],
           "title": "Aec",
           "type": "string"
         },
@@ -225,12 +210,7 @@
     },
     "log_level": {
       "default": "INFO",
-      "enum": [
-        "DEBUG",
-        "INFO",
-        "WARNING",
-        "ERROR"
-      ],
+      "enum": ["DEBUG", "INFO", "WARNING", "ERROR"],
       "title": "Log Level",
       "type": "string"
     },

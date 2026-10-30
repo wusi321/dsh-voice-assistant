@@ -59,7 +59,11 @@ export function parseDiscovery(raw: string): DiscoveryInfo {
   if (typeof runtimeVersion !== 'string' || runtimeVersion.length === 0) {
     throw new Error('discovery.runtimeVersion is missing');
   }
-  if (typeof protocolVersion !== 'number' || !Number.isInteger(protocolVersion) || protocolVersion < 1) {
+  if (
+    typeof protocolVersion !== 'number' ||
+    !Number.isInteger(protocolVersion) ||
+    protocolVersion < 1
+  ) {
     throw new Error('discovery.protocolVersion is invalid');
   }
   if (typeof startedAt !== 'string' || startedAt.length === 0) {

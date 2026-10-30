@@ -35,6 +35,7 @@ Windows 下如果仓库路径包含非 ASCII 字符，见 [WINDOWS.md](docs/WIND
 
 | 文档 | 内容 |
 |---|---|
+| [P1 验收报告](docs/P1_REPORT.md) | 实际命令结果、G1–G8 状态、未验证项 |
 | [P1 计划](docs/P1_PLAN.md) | 目录、工作包、验收门、测试计划 |
 | [架构](docs/ARCHITECTURE.md) | 三层边界、进程/线程、单一播放权威、状态分离 |
 | [协议](docs/PROTOCOL.md) | 发现文件、认证、事件、二进制帧、重连 |
