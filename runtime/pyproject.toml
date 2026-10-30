@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Local-first voice runtime for DSH Voice Assistant"
 readme = "README.md"
 license = { text = "Apache-2.0" }
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11,<3.12"
 authors = [{ name = "DSH Voice Assistant contributors" }]
 dependencies = [
     "numpy>=1.26,<3",
