@@ -1,4 +1,4 @@
-import z from '@deepseek-ai/schemastery';
+﻿import z from '@deepseek-ai/schemastery';
 
 /** Plugin configuration. Empty string means "use the platform default". */
 export const Config = z.object({
@@ -12,4 +12,5 @@ export const Config = z.object({
   statusRoute: z.boolean().default(true),
 });
 
-export type Config = z.infer<typeof Config>;
+export type Config = Schemastery.TypeT<typeof Config>;
+

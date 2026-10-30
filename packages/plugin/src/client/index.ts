@@ -90,7 +90,7 @@ function statusLabel(state: string | undefined, t: (key: string) => string): str
 
 function createSettings(React: any, t: (key: string) => string): any {
   return function VoiceSettings(): any {
-    const [status, setStatus] = React.useState<StatusPayload>({ state: 'unknown' });
+    const [status, setStatus] = React.useState({ state: 'unknown' } as StatusPayload);
     const [error, setError] = React.useState('');
     const [loading, setLoading] = React.useState(false);
 
@@ -232,3 +232,4 @@ window.__ModuleLoader__.load({
     };
   },
 });
+
