@@ -1,4 +1,4 @@
-﻿"""Audio device enumeration and capability probing.
+"""Audio device enumeration and capability probing.
 
 `sounddevice` is imported lazily so unit tests and the `doctor` command still
 work on machines without PortAudio. P1 only reads capabilities; opening streams
@@ -104,4 +104,3 @@ def probe() -> DeviceProbe:
         default_input=default_input,
         default_output=default_output,
     )
-

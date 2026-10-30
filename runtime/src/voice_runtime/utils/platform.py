@@ -1,4 +1,4 @@
-﻿"""Cross-platform application directories and private-file helpers."""
+"""Cross-platform application directories and private-file helpers."""
 
 from __future__ import annotations
 
@@ -79,4 +79,3 @@ def is_linux() -> bool:
 
 def is_macos() -> bool:
     return sys.platform == "darwin"
-
