@@ -22,6 +22,7 @@ from voice_runtime.transport.protocol import (
     AuthErrorResponse,
     AuthOk,
     AuthRequest,
+    EventType,
     PcmFrame,
     ProtocolError,
     VoiceEvent,
@@ -97,15 +98,12 @@ class RuntimeWebSocketServer:
 
     async def send_event(
         self,
-        event_type: str,
+        event_type: EventType,
         payload: dict[str, Any],
         *,
         session_id: str | None = None,
     ) -> dict[str, Any]:
-        event = self._session.session.next_event(  # type: ignore[arg-type]
-            event_type,  # type: ignore[arg-type]
-            payload,
-        )
+        event = self._session.session.next_event(event_type, payload)
         if session_id is not None:
             event["sessionId"] = session_id
         await self.broadcast(event)

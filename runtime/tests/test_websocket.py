@@ -49,6 +49,7 @@ async def test_auth_ready_and_ping(server) -> None:
         pong = json.loads(await ws.recv())
         assert pong["type"] == "pong"
         assert pong["payload"]["pingId"] == "p1"
+    await asyncio.sleep(0.05)
     assert instance.clients == 0
 
 

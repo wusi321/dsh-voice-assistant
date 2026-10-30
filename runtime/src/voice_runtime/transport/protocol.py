@@ -58,7 +58,7 @@ class VoiceEvent(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    version: Literal[1] = VOICE_EVENT_VERSION
+    version: Literal[1] = 1
     id: str = Field(min_length=1, max_length=128)
     sessionId: str = Field(min_length=1)
     sequence: int = Field(ge=0)
@@ -71,7 +71,7 @@ class AuthRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     type: Literal["auth"] = "auth"
-    version: Literal[1] = VOICE_EVENT_VERSION
+    version: Literal[1] = 1
     token: str = Field(min_length=1, max_length=512)
     clientId: str = Field(min_length=1, max_length=128)
     protocolVersion: int = Field(gt=0)

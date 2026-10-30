@@ -90,15 +90,13 @@ def process_alive(pid: int) -> bool:
         return False
     if sys.platform.startswith("win"):
         process_query_limited_information = 0x1000
-        handle = ctypes.windll.kernel32.OpenProcess(  # type: ignore[attr-defined]
-            process_query_limited_information, False, pid
-        )
+        handle = ctypes.windll.kernel32.OpenProcess(process_query_limited_information, False, pid)
         if not handle:
             return False
         try:
             return True
         finally:
-            ctypes.windll.kernel32.CloseHandle(handle)  # type: ignore[attr-defined]
+            ctypes.windll.kernel32.CloseHandle(handle)
     try:
         os.kill(pid, 0)
     except ProcessLookupError:

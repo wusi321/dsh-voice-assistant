@@ -51,7 +51,7 @@ class DeviceProbe:
 
 
 def list_devices() -> list[AudioDevice]:
-    import sounddevice as sd
+    import sounddevice as sd  # type: ignore[import-not-found]
 
     raw = sd.query_devices()
     devices: list[AudioDevice] = []
@@ -70,7 +70,7 @@ def list_devices() -> list[AudioDevice]:
 
 
 def default_devices() -> tuple[int | None, int | None]:
-    import sounddevice as sd
+    import sounddevice as sd  # type: ignore[import-not-found]
 
     try:
         input_device, output_device = sd.default.device
