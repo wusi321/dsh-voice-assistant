@@ -1,0 +1,36 @@
+# Node
+node_modules/
+dist/
+lib/
+coverage/
+*.tsbuildinfo
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Runtime state and secrets
+runtime.json
+*.token
+*.log
+logs/
+models/*
+!models/manifest.json
+!models/manifest.schema.json
+
+# Audio / debug artifacts
+*.wav
+*.pcm
+*.mp3
+debug-clips/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

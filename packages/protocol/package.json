@@ -1,0 +1,27 @@
+{
+  "name": "@dsh-voice/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Versioned voice protocol: JSON control events and binary PCM frames.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["lib"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "lint": "eslint src test"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  }
+}
