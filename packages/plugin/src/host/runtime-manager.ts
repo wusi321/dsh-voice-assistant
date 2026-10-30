@@ -1,7 +1,7 @@
 import type { ChildProcess } from 'node:child_process';
 import { spawn as nodeSpawn } from 'node:child_process';
 
-import type { AnyVoiceEvent } from '@dsh-voice/protocol';
+import type { AnyVoiceEvent, VoiceEventType } from '@dsh-voice/protocol';
 
 import type { Config } from './config.js';
 import {
@@ -49,6 +49,7 @@ export class RuntimeManager {
   private attempt = 0;
   private running = false;
   private statusValue: RuntimeStatus;
+  private readonly listeners = new Set<(event: AnyVoiceEvent) => void>();
 
   constructor(ctx: HostContext, config: Config, deps: RuntimeManagerDeps = {}) {
     this.ctx = ctx;
@@ -76,6 +77,20 @@ export class RuntimeManager {
 
   get status(): RuntimeStatus {
     return this.statusValue;
+  }
+
+  /** True only while the Runtime is authenticated and ready. */
+  get connected(): boolean {
+    return this.client?.state === 'ready';
+  }
+
+  onEvent(listener: (event: AnyVoiceEvent) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  send(type: VoiceEventType, payload: Record<string, unknown>): boolean {
+    return this.client?.send(type, payload) ?? false;
   }
 
   async start(): Promise<void> {
@@ -167,6 +182,13 @@ export class RuntimeManager {
   }
 
   private handleEvent(event: AnyVoiceEvent): void {
+    for (const listener of this.listeners) {
+      try {
+        listener(event);
+      } catch {
+        // Consumer failures must not break the Runtime connection.
+      }
+    }
     if (event.type === 'runtime.error') {
       log(this.ctx, 'warn', 'runtime error event', { event: event.payload });
     }

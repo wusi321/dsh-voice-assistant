@@ -14,6 +14,10 @@ const config: Config = {
   reconnectMaxMs: 1_000,
   fakeAudio: false,
   statusRoute: true,
+  sessionStrategy: 'active',
+  fixedSessionId: '',
+  cancelTimeoutMs: 1_000,
+  speakAssistant: true,
 };
 
 const info: DiscoveryInfo = {

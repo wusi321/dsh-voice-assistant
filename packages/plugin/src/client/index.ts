@@ -9,8 +9,6 @@ declare global {
 const PLUGIN_ID = 'dsh-voice-assistant';
 const NS = 'voice-assistant';
 
-// Kept in the bundle so the client has no build-time JSON import outside src/.
-// The package-level locale/*.json files are the DSH display metadata source.
 const EN = {
   meta: {
     title: 'Voice Assistant',
@@ -34,7 +32,26 @@ const EN = {
     discovery: 'Discovery file',
     reconnect: 'Refresh',
   },
-  notice: 'P1 skeleton: no microphone, wake word, ASR, or TTS is active yet.',
+  session: {
+    label: 'Bound session',
+    live: 'live',
+    offline: 'not live',
+    source: 'source',
+    none: 'No session reported yet',
+  },
+  agent: {
+    label: 'Agent state',
+    tool: 'Tool',
+    text: 'Last voice text',
+    error: 'Agent error',
+  },
+  tts: {
+    label: 'TTS',
+    speaking: 'Speaking',
+    idle: 'Idle',
+  },
+  notice:
+    'P5: voice messages target the active DSH Session; assistant text is spoken by the local Runtime. P7 adds full-duplex barge-in.',
 };
 
 const ZH = {
@@ -59,8 +76,45 @@ const ZH = {
     discovery: '发现文件',
     reconnect: '刷新',
   },
-  notice: 'P1 骨架：尚未启用麦克风、唤醒词、ASR 或 TTS。',
+  session: {
+    label: '绑定的会话',
+    live: '在线',
+    offline: '不在线',
+    source: '来源',
+    none: '尚未上报会话',
+  },
+  agent: {
+    label: 'Agent 状态',
+    tool: '工具',
+    text: '最近语音文本',
+    error: 'Agent 错误',
+  },
+  tts: {
+    label: 'TTS',
+    speaking: '播报中',
+    idle: '空闲',
+  },
+  notice: 'P5：语音消息发送到当前 DSH Session，助手文本由本地 Runtime 播报。P7 再加入全双工打断。',
 };
+
+interface SessionStatus {
+  sessionId?: string | null;
+  live?: boolean;
+  source?: string;
+  agentStatus?: string;
+}
+
+interface AgentStatus {
+  agentState?: string;
+  toolName?: string;
+  lastText?: string;
+  lastError?: string;
+}
+
+interface TtsStatus {
+  speaking?: boolean;
+  lastText?: string;
+}
 
 interface StatusPayload {
   state?: string;
@@ -69,6 +123,9 @@ interface StatusPayload {
   pid?: number;
   runtimeVersion?: string;
   discoveryPath?: string;
+  session?: SessionStatus;
+  agent?: AgentStatus;
+  tts?: TtsStatus;
 }
 
 const COLORS: Record<string, string> = {
@@ -83,6 +140,28 @@ function statusLabel(state: string | undefined, t: (key: string) => string): str
   if (!state) return t('status.unknown');
   const value = t(`status.${state}`);
   return value || state;
+}
+
+async function reportActiveSession(sessionId: string): Promise<void> {
+  await fetch('/dsh-voice-assistant/active-session', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    cache: 'no-store',
+    body: JSON.stringify({ sessionId }),
+  });
+}
+
+function createSessionReporter(React: any): any {
+  return function SessionReporter(props: { sessionId?: string }): any {
+    const sessionId = props?.sessionId;
+    React.useEffect(() => {
+      if (!sessionId) return;
+      void reportActiveSession(sessionId).catch(() => {
+        // The host may not be mounted yet; the next session switch retries.
+      });
+    }, [sessionId]);
+    return null;
+  };
 }
 
 function createSettings(React: any, t: (key: string) => string): any {
@@ -113,6 +192,9 @@ function createSettings(React: any, t: (key: string) => string): any {
     }, [refresh]);
 
     const state = status.state ?? 'unknown';
+    const session = status.session;
+    const agent = status.agent;
+    const tts = status.tts;
     const row = (label: string, value: string | number | undefined): any =>
       React.createElement(
         'tr',
@@ -127,12 +209,12 @@ function createSettings(React: any, t: (key: string) => string): any {
 
     return React.createElement(
       'section',
-      { style: { padding: '8px 0', maxWidth: 720, color: 'var(--dsh-color-text, #e5e7eb)' } },
+      { style: { padding: '8px 0', maxWidth: 760, color: 'var(--dsh-color-text, #e5e7eb)' } },
       React.createElement('h2', { style: { margin: '0 0 4px' } }, t('title')),
       React.createElement(
         'p',
         { style: { margin: '0 0 16px', opacity: 0.7 } },
-        'Local wake word, streaming ASR, TTS, and dsh-pet integration.',
+        'Local wake word, streaming ASR, TTS, and DSH Agent integration.',
       ),
       React.createElement(
         'div',
@@ -166,8 +248,18 @@ function createSettings(React: any, t: (key: string) => string): any {
           null,
           row(t('runtime.version'), status.runtimeVersion),
           row(t('runtime.port'), status.port),
+          row(
+            t('session.label'),
+            session?.sessionId
+              ? `${session.sessionId} (${session.live ? t('session.live') : t('session.offline')})`
+              : t('session.none'),
+          ),
+          row(t('session.source'), session?.source),
+          row(t('agent.label'), agent?.agentState),
+          row(t('agent.tool'), agent?.toolName),
+          row(t('tts.label'), tts?.speaking ? t('tts.speaking') : t('tts.idle')),
+          row(t('agent.text'), agent?.lastText ?? tts?.lastText),
           row(t('runtime.discovery'), status.discoveryPath),
-          row(t('runtime.command'), 'voice-runtime daemon'),
         ),
       ),
       error
@@ -175,6 +267,13 @@ function createSettings(React: any, t: (key: string) => string): any {
             'p',
             { style: { color: '#f87171', fontSize: 13 } },
             `${t('status.error')}: ${error}`,
+          )
+        : null,
+      agent?.lastError
+        ? React.createElement(
+            'p',
+            { style: { color: '#f87171', fontSize: 13 } },
+            `${t('agent.error')}: ${agent.lastError}`,
           )
         : null,
       React.createElement(
@@ -213,6 +312,8 @@ window.__ModuleLoader__.load({
         ctx.locale.register(NS, { en: EN, zh: ZH });
         const t = ctx.locale.bind(NS);
         const VoiceSettings = createSettings(React, t);
+        const SessionReporter = createSessionReporter(React);
+
         ctx.slots.inject('settings.section', () =>
           ctx.slots.register(
             {
@@ -223,6 +324,17 @@ window.__ModuleLoader__.load({
               locale: NS,
             },
             VoiceSettings,
+          ),
+        );
+
+        ctx.slots.inject('conversation.composer.dock', () =>
+          ctx.slots.register(
+            {
+              name: 'conversation.composer.dock',
+              id: `${PLUGIN_ID}-session`,
+              order: 90,
+            },
+            SessionReporter,
           ),
         );
       },

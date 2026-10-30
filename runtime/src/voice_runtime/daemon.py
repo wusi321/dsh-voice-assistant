@@ -13,11 +13,16 @@ from pathlib import Path
 from typing import Any
 
 from voice_runtime import __version__
+from voice_runtime.audio.audio_io import AudioIO
 from voice_runtime.audio.device_manager import probe as probe_devices
 from voice_runtime.config.schema import RuntimeConfig, config_json_schema, load_config
+from voice_runtime.engines.fake import FakeTTSEngine
+from voice_runtime.engines.models import SherpaModels, default_model_root
+from voice_runtime.engines.sherpa_tts import SherpaTTS
 from voice_runtime.runtime.supervisor import RuntimeSupervisor
 from voice_runtime.utils.logging import configure_logging
 from voice_runtime.utils.platform import data_dir, ensure_dir, is_linux, is_windows
+from voice_runtime.voice_service import NullAudio, RuntimeVoiceService
 
 logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -138,8 +143,28 @@ def _install_signal_handlers(loop: asyncio.AbstractEventLoop, event: asyncio.Eve
                 continue
 
 
-async def _serve(config: RuntimeConfig) -> int:
-    supervisor = RuntimeSupervisor(config)
+def _build_voice_service(config: RuntimeConfig, mode: str) -> RuntimeVoiceService | None:
+    if mode == "off":
+        return None
+    if mode == "fake":
+        return RuntimeVoiceService(tts=FakeTTSEngine(), audio=NullAudio())
+    models = SherpaModels.discover(config.engines.model_dir or default_model_root())
+    tts = SherpaTTS(models.tts_dir, kind=models.tts_kind)
+    audio = AudioIO(
+        input_device=config.audio.input_device,
+        output_device=config.audio.output_device,
+        preferred_input_rate=config.audio.preferred_sample_rate,
+        preferred_output_rate=config.audio.preferred_sample_rate,
+        block_ms=config.audio.block_ms,
+        aec_enabled=config.audio.aec_enabled,
+        echo_delay_ms=config.audio.echo_delay_ms,
+    )
+    return RuntimeVoiceService(tts=tts, audio=audio)
+
+
+async def _serve(config: RuntimeConfig, voice_mode: str = "off") -> int:
+    service = _build_voice_service(config, voice_mode)
+    supervisor = RuntimeSupervisor(config, voice_service=service)
     info = await supervisor.start()
     print(
         json.dumps(
@@ -185,6 +210,12 @@ def build_parser() -> argparse.ArgumentParser:
     daemon.add_argument("--fake-audio", action="store_true")
     daemon.add_argument("--log-level", choices=["DEBUG", "INFO", "WARNING", "ERROR"], default=None)
     daemon.add_argument("--json-logs", action="store_true")
+    daemon.add_argument(
+        "--voice",
+        choices=["off", "fake", "real"],
+        default="off",
+        help="TTS output mode: off, fake (no devices), real (models + audio)",
+    )
     return parser
 
 
@@ -217,7 +248,7 @@ def main(argv: list[str] | None = None) -> int:
 
     configure_logging(config.log_level, json_output=config.json_logs)
     try:
-        return asyncio.run(_serve(config))
+        return asyncio.run(_serve(config, args.voice))
     except KeyboardInterrupt:
         return 130
 

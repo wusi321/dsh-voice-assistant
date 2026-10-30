@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0] - 2026-10-30
+
+### Added
+
+- P5 DSH plugin integration: `SessionBinder` (client-reported active session, fixed, last), `DshAgentBridge` (`followup`/`steer`/`cancel`/`whenIdle`), assistant-stream sentence segmentation, `session/event` tool status, and TTS output through the Runtime.
+- Client `conversation.composer.dock` session reporter and richer settings status (session, Agent state, tool, TTS).
+- Runtime `RuntimeVoiceService` and `--voice off|fake|real`; TTS `tts.speak`/`tts.cancel` over the versioned WebSocket protocol.
+- Tests for AgentBridge, SessionBinder, sentence sanitization, TTS output, HTTP session route, and real TTS via WebSocket.
+
+### Notes
+
+- Live DSH installation/session verification remains; AgentBridge is tested with the verified stable API and Mock agents.
+- dsh-pet bridge, full-duplex barge-in, and permission confirmation remain P6-P8.
+
 ## [0.2.0] - 2026-10-30
 
 ### Added

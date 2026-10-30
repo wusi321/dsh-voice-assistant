@@ -1,6 +1,8 @@
 /** Minimal structural types for the DSH Cordis Host context used by this plugin. */
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
+import type { DshAgentService } from './dsh-types.js';
+
 export interface HostLogger {
   info(message: string, context?: unknown): void;
   warn(message: string, context?: unknown): void;
@@ -23,6 +25,7 @@ export interface HostContext {
   get<T = any>(name: string, required?: boolean): T | undefined;
   logger?: HostLogger;
   webServer?: WebServer;
+  agents?: DshAgentService;
 }
 
 export function log(

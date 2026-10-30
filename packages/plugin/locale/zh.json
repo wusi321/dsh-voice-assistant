@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "语音助手",
-    "description": "本地唤醒词、流式语音识别、TTS 与 dsh-pet 桌宠联动。"
+    "description": "本地唤醒词、流式语音识别、TTS 与 DSH Agent 集成。"
   },
   "nav": "语音助手",
   "title": "语音助手",
@@ -20,5 +20,23 @@
     "discovery": "发现文件",
     "reconnect": "刷新"
   },
-  "notice": "P1 骨架：尚未启用麦克风、唤醒词、ASR 或 TTS。"
+  "session": {
+    "label": "绑定的会话",
+    "live": "在线",
+    "offline": "不在线",
+    "source": "来源",
+    "none": "尚未上报会话"
+  },
+  "agent": {
+    "label": "Agent 状态",
+    "tool": "工具",
+    "text": "最近语音文本",
+    "error": "Agent 错误"
+  },
+  "tts": {
+    "label": "TTS",
+    "speaking": "播报中",
+    "idle": "空闲"
+  },
+  "notice": "P5：语音消息发送到当前 DSH Session，助手文本由本地 Runtime 播报。"
 }

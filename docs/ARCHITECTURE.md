@@ -53,10 +53,13 @@ DSH Voice Assistant is split into three independently runnable pieces:
   TTS; real local end-to-end tests for TTS, VAD → ASR, and KWS.
 - P4 transport: versioned JSON events, binary PCM frames, token auth, heartbeat,
   idle/auth/connect timeouts, exponential-backoff reconnect, event tests.
-- P1 scaffold and DSH plugin skeleton remain.
+- P5 DSH integration: Client reports the selected `sessionId`; Host binds it,
+  sends voice text through `agent.followup/steer`, cancels with `keepInbox`,
+  consumes `agent/assistant-stream` (`text-delta` only), maps `session/event`
+  tool states, and emits assistant sentences to the Runtime's TTS.
 
-Not implemented: DSH Agent bridge and live settings/mic UI (P5), dsh-pet bridge
-(P6), full-duplex barge-in (P7), permission confirmation (P8), packaging (P9).
+Not implemented: live DSH installation/verification, dsh-pet bridge (P6),
+full-duplex barge-in (P7), permission confirmation (P8), packaging (P9).
 
 ## Audio path
 
@@ -83,3 +86,21 @@ speaker (device rate) ← PlaybackStream ← PlaybackScheduler ← resampled TTS
 - The DSH plugin host is one Node event loop. It owns one RuntimeClient,
   sends application heartbeats, and reconnects with exponential backoff.
 - The DSH client page only polls non-sensitive status; it never receives audio.
+
+## DSH plugin flow (P5)
+
+```text
+Client SessionReporter (sessionId prop)
+  → POST /dsh-voice-assistant/active-session
+  → SessionBinder (active | fixed | last)
+  → DshAgentBridge.getActiveSession() → ctx.agents.get(id)
+
+speech.final (Runtime) → bridge.sendMessage → agent.followup(user message)
+agent/assistant-stream → text-delta only → SentenceSegmenter
+  → TtsOutput → Runtime tts.speak → RuntimeVoiceService → AudioIO playback
+session/event → tool/turn/approval → AgentBridge status → /status
+session.interrupt (Runtime) → TtsOutput.cancel or agent.cancel/steer
+```
+
+The plugin never creates an Agent, never answers a DSH approval itself, and
+never reads another plugin's DOM or private state.

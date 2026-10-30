@@ -14,8 +14,9 @@ authority for Agent tools and approvals.
 - Discovery files are written atomically and restricted to the current user
   (`chmod 600` on POSIX, `icacls` on Windows). The plugin rejects non-loopback
   hosts and dead PIDs.
-- The DSH status route (`/dsh-voice-assistant/status`) is read-only and exposes
-  no secrets or audio. It is localhost-only because DSH's web server is local.
+- The DSH status route (`/dsh-voice-assistant/status`) exposes no secrets or
+  audio. The only write is `/dsh-voice-assistant/active-session`, which changes
+  the voice routing target and cannot execute an Agent/TTS command.
 
 ## Audio and transcripts
 
@@ -40,9 +41,11 @@ authority for Agent tools and approvals.
 - The plugin will not expose hidden reasoning or tool arguments through TTS:
   only `text-delta`/`block-end(text)` is eligible for speech.
 
-## P1 limitations
+## Local status/session route limitations
 
-The status route has no authentication beyond localhost binding. It returns only
-state/version/port and is not a control channel. If it is later extended with
-control operations, it must use the same token and CSRF/origin checks as a
-privileged local API.
+The Host route has no authentication beyond localhost binding. `GET /status`
+returns runtime/session/agent/TTS state; `POST /active-session` only changes the
+voice routing target and never executes an Agent command. The route validates a
+small JSON body (≤8 KiB) and a non-empty `sessionId`. It must not be exposed
+publicly or extended with Agent/TTS control without token and CSRF/origin checks
+equivalent to a privileged local API.

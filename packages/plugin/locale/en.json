@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Voice Assistant",
-    "description": "Local wake word, streaming speech recognition, TTS, and dsh-pet avatar integration."
+    "description": "Local wake word, streaming speech recognition, TTS, and DSH Agent integration."
   },
   "nav": "Voice Assistant",
   "title": "Voice Assistant",
@@ -20,5 +20,23 @@
     "discovery": "Discovery file",
     "reconnect": "Refresh"
   },
-  "notice": "P1 skeleton: no microphone, wake word, ASR, or TTS is active yet."
+  "session": {
+    "label": "Bound session",
+    "live": "live",
+    "offline": "not live",
+    "source": "Source",
+    "none": "No session reported yet"
+  },
+  "agent": {
+    "label": "Agent state",
+    "tool": "Tool",
+    "text": "Last voice text",
+    "error": "Agent error"
+  },
+  "tts": {
+    "label": "TTS",
+    "speaking": "Speaking",
+    "idle": "Idle"
+  },
+  "notice": "P5: voice messages target the active DSH Session; assistant text is spoken by the local Runtime."
 }

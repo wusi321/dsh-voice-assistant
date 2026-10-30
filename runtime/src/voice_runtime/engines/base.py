@@ -91,6 +91,9 @@ class ASREngine(AudioEngine):
 class TTSEngine(AudioEngine):
     kind = EngineKind.TTS
 
+    #: Output sample rate, set by the adapter after initialization.
+    sample_rate: int = 0
+
     @abstractmethod
     def synthesize_stream(self, text: str) -> AsyncIterator[np.ndarray]:
         """Yield float32 mono chunks at the engine's sample rate."""

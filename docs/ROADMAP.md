@@ -7,7 +7,7 @@
 | P2 | done (Windows) | Real audio capture/playback, device management, AEC | Windows real device + mock tests; Ubuntu HW pending |
 | P3 | done (local) | Wake/VAD/ASR/TTS adapters and local models | 3 real e2e tests pass; benchmark still pending |
 | P4 | done | Versioned protocol, auth, heartbeat, reconnect, timeouts | protocol/auth/timeout/reconnect tests pass |
-| P5 | planned | DSH Agent Bridge + full settings/mic UI | voice text into live Session |
+| P5 | done (core) | DSH Agent Bridge + settings/session UI | Agent/TTS tests pass; live DSH install pending |
 | P6 | planned | dsh-pet bridge: lock, animation, work status, bubble | avatar mapping test |
 | P7 | planned | Full duplex, barge-in, TTS/Agent/steer separation | interruption test matrix |
 | P8 | planned | Permission confirmation, audit, red-team | no vague-consent bypass |
@@ -32,3 +32,5 @@
 - P3: `docs/P3_REPORT.md`; TTS, VAD+ASR, KWS real-model e2e verified.
 - P4: `docs/P4_REPORT.md`; auth, heartbeat, idle/auth timeout, reconnect and
   binary frame tests pass.
+- P5: `docs/P5_REPORT.md`; Agent Bridge/session/assistant-stream/tool status/TTS
+  tests pass; live DSH installation remains.
