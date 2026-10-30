@@ -1,0 +1,37 @@
+{
+  "host": "127.0.0.1",
+  "port": 0,
+  "protocol_version": 1,
+  "auth_timeout_seconds": 5.0,
+  "heartbeat_interval_seconds": 10.0,
+  "max_connections": 8,
+  "log_level": "INFO",
+  "json_logs": false,
+  "data_dir": null,
+  "fake_audio": false,
+  "audio": {
+    "input_device": null,
+    "output_device": null,
+    "preferred_sample_rate": null,
+    "block_ms": 10,
+    "aec_enabled": true,
+    "echo_delay_ms": 40,
+    "noise_suppression": true
+  },
+  "engines": {
+    "wake": "sherpa_kws",
+    "vad": "silero",
+    "asr": "sherpa_streaming",
+    "tts": "kokoro",
+    "aec": "webrtc_apm",
+    "model_dir": null
+  },
+  "session": {
+    "follow_up_window_seconds": 8.0,
+    "max_utterance_seconds": 15.0,
+    "vad_silence_ms": 450,
+    "barge_in_ms": 350,
+    "wake_verify_ms": 400,
+    "auto_speak": true
+  }
+}

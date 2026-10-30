@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "title": "语音助手",
+    "description": "本地唤醒词、流式语音识别、TTS 与 dsh-pet 桌宠联动。"
+  },
+  "nav": "语音助手",
+  "title": "语音助手",
+  "status": {
+    "label": "Runtime 状态",
+    "connected": "已连接",
+    "starting": "启动中",
+    "stopped": "已停止",
+    "error": "错误",
+    "unknown": "未知"
+  },
+  "runtime": {
+    "version": "Runtime 版本",
+    "port": "端口",
+    "command": "Runtime 命令",
+    "discovery": "发现文件",
+    "reconnect": "刷新"
+  },
+  "notice": "P1 骨架：尚未启用麦克风、唤醒词、ASR 或 TTS。"
+}

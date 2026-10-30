@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-30",
+  "models": [
+    {
+      "model_id": "silero-vad-v4",
+      "engine": "sherpa-onnx",
+      "task": "vad",
+      "language": "any",
+      "version": "4.0",
+      "download_url": [
+        "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx",
+        "https://hf-mirror.com/csukuangfj/sherpa-onnx-silero-vad/resolve/main/silero_vad.onnx"
+      ],
+      "sha256": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6",
+      "size": 643854,
+      "license": "MIT",
+      "license_url": "https://github.com/snakers4/silero-vad/blob/master/LICENSE",
+      "commercial_use": true,
+      "redistributable": true,
+      "supported_platforms": ["windows-x64", "linux-x64"],
+      "sample_rate": 16000,
+      "capabilities": ["vad", "16k-mono"],
+      "verified": true
+    }
+  ],
+  "candidates": [
+    {
+      "model_id": "kokoro-multi-lang-v1_1",
+      "engine": "sherpa-onnx",
+      "task": "tts",
+      "language": "zh-en",
+      "version": "1.1",
+      "download_url": [
+        "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_1.tar.bz2"
+      ],
+      "sha256": null,
+      "size": null,
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/hexgrad/Kokoro-82M",
+      "commercial_use": true,
+      "redistributable": true,
+      "supported_platforms": ["windows-x64", "linux-x64"],
+      "sample_rate": 24000,
+      "capabilities": ["tts", "zh", "en"],
+      "verified": false,
+      "note": "Candidate only. Record the archive SHA256 and size before enabling automatic download."
+    }
+  ]
+}

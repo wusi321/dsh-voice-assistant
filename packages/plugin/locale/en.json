@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "title": "Voice Assistant",
+    "description": "Local wake word, streaming speech recognition, TTS, and dsh-pet avatar integration."
+  },
+  "nav": "Voice Assistant",
+  "title": "Voice Assistant",
+  "status": {
+    "label": "Runtime status",
+    "connected": "Connected",
+    "starting": "Starting",
+    "stopped": "Stopped",
+    "error": "Error",
+    "unknown": "Unknown"
+  },
+  "runtime": {
+    "version": "Runtime version",
+    "port": "Port",
+    "command": "Runtime command",
+    "discovery": "Discovery file",
+    "reconnect": "Refresh"
+  },
+  "notice": "P1 skeleton: no microphone, wake word, ASR, or TTS is active yet."
+}

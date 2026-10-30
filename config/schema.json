@@ -1,0 +1,272 @@
+{
+  "$defs": {
+    "AudioConfig": {
+      "description": "Audio device and DSP settings. Sample rates are probed, not assumed.",
+      "properties": {
+        "input_device": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Device"
+        },
+        "output_device": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Device"
+        },
+        "preferred_sample_rate": {
+          "anyOf": [
+            {
+              "maximum": 192000,
+              "minimum": 8000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Preferred Sample Rate"
+        },
+        "block_ms": {
+          "default": 10,
+          "maximum": 50,
+          "minimum": 5,
+          "title": "Block Ms",
+          "type": "integer"
+        },
+        "aec_enabled": {
+          "default": true,
+          "title": "Aec Enabled",
+          "type": "boolean"
+        },
+        "echo_delay_ms": {
+          "default": 40,
+          "maximum": 500,
+          "minimum": 0,
+          "title": "Echo Delay Ms",
+          "type": "integer"
+        },
+        "noise_suppression": {
+          "default": true,
+          "title": "Noise Suppression",
+          "type": "boolean"
+        }
+      },
+      "title": "AudioConfig",
+      "type": "object"
+    },
+    "EnginesConfig": {
+      "description": "Adapter names and model locations. Implementations land in P3.",
+      "properties": {
+        "wake": {
+          "default": "sherpa_kws",
+          "enum": [
+            "sherpa_kws",
+            "fake"
+          ],
+          "title": "Wake",
+          "type": "string"
+        },
+        "vad": {
+          "default": "silero",
+          "enum": [
+            "silero",
+            "fake"
+          ],
+          "title": "Vad",
+          "type": "string"
+        },
+        "asr": {
+          "default": "sherpa_streaming",
+          "enum": [
+            "sherpa_streaming",
+            "fake"
+          ],
+          "title": "Asr",
+          "type": "string"
+        },
+        "tts": {
+          "default": "kokoro",
+          "enum": [
+            "kokoro",
+            "fake"
+          ],
+          "title": "Tts",
+          "type": "string"
+        },
+        "aec": {
+          "default": "webrtc_apm",
+          "enum": [
+            "webrtc_apm",
+            "none"
+          ],
+          "title": "Aec",
+          "type": "string"
+        },
+        "model_dir": {
+          "anyOf": [
+            {
+              "format": "path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Dir"
+        }
+      },
+      "title": "EnginesConfig",
+      "type": "object"
+    },
+    "SessionConfig": {
+      "description": "Voice-session timing and interruption behavior.",
+      "properties": {
+        "follow_up_window_seconds": {
+          "default": 8.0,
+          "maximum": 60.0,
+          "minimum": 1.0,
+          "title": "Follow Up Window Seconds",
+          "type": "number"
+        },
+        "max_utterance_seconds": {
+          "default": 15.0,
+          "maximum": 120.0,
+          "minimum": 1.0,
+          "title": "Max Utterance Seconds",
+          "type": "number"
+        },
+        "vad_silence_ms": {
+          "default": 450,
+          "maximum": 2000,
+          "minimum": 200,
+          "title": "Vad Silence Ms",
+          "type": "integer"
+        },
+        "barge_in_ms": {
+          "default": 350,
+          "maximum": 2000,
+          "minimum": 100,
+          "title": "Barge In Ms",
+          "type": "integer"
+        },
+        "wake_verify_ms": {
+          "default": 400,
+          "maximum": 1500,
+          "minimum": 100,
+          "title": "Wake Verify Ms",
+          "type": "integer"
+        },
+        "auto_speak": {
+          "default": true,
+          "title": "Auto Speak",
+          "type": "boolean"
+        }
+      },
+      "title": "SessionConfig",
+      "type": "object"
+    }
+  },
+  "description": "Runtime configuration; environment variables use the DSH_VOICE_ prefix.",
+  "properties": {
+    "host": {
+      "default": "127.0.0.1",
+      "title": "Host",
+      "type": "string"
+    },
+    "port": {
+      "default": 0,
+      "maximum": 65535,
+      "minimum": 0,
+      "title": "Port",
+      "type": "integer"
+    },
+    "protocol_version": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Protocol Version",
+      "type": "integer"
+    },
+    "auth_timeout_seconds": {
+      "default": 5.0,
+      "maximum": 30.0,
+      "minimum": 1.0,
+      "title": "Auth Timeout Seconds",
+      "type": "number"
+    },
+    "heartbeat_interval_seconds": {
+      "default": 10.0,
+      "maximum": 60.0,
+      "minimum": 2.0,
+      "title": "Heartbeat Interval Seconds",
+      "type": "number"
+    },
+    "max_connections": {
+      "default": 8,
+      "maximum": 64,
+      "minimum": 1,
+      "title": "Max Connections",
+      "type": "integer"
+    },
+    "log_level": {
+      "default": "INFO",
+      "enum": [
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR"
+      ],
+      "title": "Log Level",
+      "type": "string"
+    },
+    "json_logs": {
+      "default": false,
+      "title": "Json Logs",
+      "type": "boolean"
+    },
+    "data_dir": {
+      "anyOf": [
+        {
+          "format": "path",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Data Dir"
+    },
+    "fake_audio": {
+      "default": false,
+      "title": "Fake Audio",
+      "type": "boolean"
+    },
+    "audio": {
+      "$ref": "#/$defs/AudioConfig"
+    },
+    "engines": {
+      "$ref": "#/$defs/EnginesConfig"
+    },
+    "session": {
+      "$ref": "#/$defs/SessionConfig"
+    }
+  },
+  "title": "RuntimeConfig",
+  "type": "object"
+}
